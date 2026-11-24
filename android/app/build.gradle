@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+}
+
+// O APK empacota os mesmos arquivos do app web (pasta acima de android/). Nada é duplicado no repositório:
+// os arquivos são copiados para build/webapp a cada compilação.
+def raizWeb = rootProject.projectDir.parentFile
+def pastaWeb = layout.buildDirectory.dir('webapp').get().asFile
+
+android {
+    namespace 'com.sistrafa.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.sistrafa.app'
+        minSdk 24
+        targetSdk 35
+        versionCode 8
+        versionName '0.8'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug   // versão de teste: assinada com a chave de depuração
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main { assets.srcDirs += [pastaWeb] }
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'androidx.core:core:1.13.1'
+}
+
+tasks.register('copiarAppWeb', Sync) {
+    from(raizWeb) {
+        include 'index.html', 'manifest.webmanifest', 'servico-offline.js', 'css/**', 'js/**', 'recursos/**'
+    }
+    into pastaWeb
+}
+preBuild.dependsOn 'copiarAppWeb'

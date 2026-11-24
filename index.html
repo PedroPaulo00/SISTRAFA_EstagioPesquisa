@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#020E0E">
+  <meta name="description" content="SISTRAFA — apoio a ocorrências com fauna silvestre para profissionais de segurança pública e defesa civil.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>SISTRAFA</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="recursos/logo.png">
+  <link rel="apple-touch-icon" href="recursos/icone-192.png">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <div class="fundo-bolhas" aria-hidden="true"></div>
+  <div class="aviso-rotacao" role="alert"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>Gire o celular para a posição vertical</div>
+  <div id="aplicativo" aria-live="off">
+    <noscript><p style="padding:24px">O SISTRAFA precisa de JavaScript ativado para funcionar.</p></noscript>
+  </div>
+
+  <!-- as bibliotecas de PDF (js/bibliotecas) são carregadas só ao gerar o primeiro relatório -->
+  <script src="js/dados.js"></script>
+  <script src="js/armazenamento.js"></script>
+  <script src="js/exif.js"></script>
+  <script src="js/fauna-online.js"></script>
+  <script src="js/interface.js"></script>
+  <script src="js/relatorio-pdf.js"></script>
+  <script src="js/ocorrencia.js"></script>
+  <script src="js/aplicativo.js"></script>
+</body>
+</html>

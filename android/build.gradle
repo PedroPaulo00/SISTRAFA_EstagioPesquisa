@@ -1,0 +1,8 @@
+plugins {
+    id 'com.android.application' version '8.11.1' apply false
+}
+
+// Arquivos de compilação ficam fora da pasta do projeto (que está no OneDrive), em %LOCALAPPDATA%\sistrafa-android
+def pastaBuild = new File(System.getenv('LOCALAPPDATA') ?: System.getProperty('java.io.tmpdir'), 'sistrafa-android/build')
+layout.buildDirectory = new File(pastaBuild, 'raiz')
+subprojects { layout.buildDirectory = new File(pastaBuild, name) }

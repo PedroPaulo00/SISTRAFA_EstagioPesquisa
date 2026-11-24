@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>SISTRAFA: aplicação web progressiva para triagem de risco e manejo de fauna silvestre em operações de campo</title>
+<style>
+/* Fonte Tinos (SIL Open Font License 1.1), métricas equivalentes à Times New Roman */
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; src: url("fontes/tinos-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 400; src: url("fontes/tinos-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Tinos"; font-style: italic; font-weight: 400; src: url("fontes/tinos-latin-400-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: italic; font-weight: 400; src: url("fontes/tinos-latin-ext-400-italic.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; src: url("fontes/tinos-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: normal; font-weight: 700; src: url("fontes/tinos-latin-ext-700-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Tinos"; font-style: italic; font-weight: 700; src: url("fontes/tinos-latin-700-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Tinos"; font-style: italic; font-weight: 700; src: url("fontes/tinos-latin-ext-700-italic.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* ABNT NBR 14724: A4, margens 3 cm (superior e esquerda) e 2 cm (inferior e direita); número da página no canto superior direito */
+@page {
+  size: A4;
+  margin: 3cm 2cm 2cm 3cm;
+  @top-right { content: counter(page); font-family: "Tinos", "Times New Roman", serif; font-size: 10pt; vertical-align: bottom; padding-bottom: 0.6cm; }
+}
+@page :first { @top-right { content: none; } }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: "Tinos", "Times New Roman", serif; font-size: 12pt; line-height: 1.5; color: #000; text-align: justify; hyphens: auto; }
+p { margin: 0 0 6pt; text-indent: 1.25cm; orphans: 2; widows: 2; }
+em, i { font-style: italic; }
+
+/* elementos pré-textuais */
+.titulo { text-align: center; font-size: 14pt; font-weight: 700; line-height: 1.3; margin: 0 0 6pt; }
+.titulo-en { text-align: center; font-size: 12pt; font-style: italic; line-height: 1.3; margin: 0 0 18pt; }
+.autores { text-align: center; font-weight: 700; margin: 0 0 8pt; text-indent: 0; }
+.afiliacao { text-align: center; font-size: 11pt; line-height: 1.35; margin: 0 0 4pt; text-indent: 0; }
+.emails { text-align: center; font-size: 10pt; margin: 0 0 18pt; text-indent: 0; }
+.resumo { line-height: 1.0; margin: 0 0 6pt; text-indent: 0; }
+.chaves { line-height: 1.0; margin: 0 0 18pt; text-indent: 0; }
+
+/* seções (ABNT NBR 6024): primária em negrito e maiúsculas; secundária em negrito */
+h2 { font-size: 12pt; font-weight: 700; text-transform: uppercase; margin: 18pt 0 10pt; text-align: left; break-after: avoid; line-height: 1.5; }
+h3 { font-size: 12pt; font-weight: 700; margin: 14pt 0 8pt; text-align: left; break-after: avoid; line-height: 1.5; }
+h2.sem-numero { margin-top: 24pt; }
+
+/* ilustrações e quadros: identificação acima, fonte abaixo, em tamanho menor */
+figure { margin: 10pt 0 12pt; break-inside: avoid; text-align: center; }
+.legenda { font-size: 10pt; line-height: 1.2; text-align: center; margin: 0 0 6pt; text-indent: 0; }
+.legenda b { font-weight: 700; }
+.fonte { font-size: 10pt; line-height: 1.2; text-align: center; margin: 6pt 0 0; text-indent: 0; break-before: avoid; }
+.telas { display: flex; justify-content: center; gap: 0.45cm; }
+.telas div { width: 4.75cm; }
+.telas img { width: 4.75cm; display: block; border: 0.5pt solid #444; }
+.telas span { display: block; font-size: 10pt; text-align: center; margin-top: 3pt; line-height: 1.2; }
+.relatorio-img { display: flex; justify-content: center; gap: 0.5cm; }
+.relatorio-img img { width: 7.4cm; border: 0.5pt solid #444; display: block; }
+svg { display: block; margin: 0 auto; }
+svg text { font-family: "Tinos", "Times New Roman", serif; }
+
+table { border-collapse: collapse; width: 100%; font-size: 10pt; line-height: 1.2; text-align: left; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+/* quadro: grade completa */
+table.quadro th, table.quadro td { border: 0.5pt solid #000; padding: 3pt 4pt; vertical-align: top; }
+table.quadro th { font-weight: 700; background: #e9e9e9; }
+/* tabela (normas de apresentação tabular do IBGE): sem traços verticais nas bordas */
+table.tabela th, table.tabela td { padding: 1.6pt 5pt; border: 0; vertical-align: top; }
+table.tabela thead th { border-top: 1pt solid #000; border-bottom: 0.5pt solid #000; }
+table.tabela tbody tr:last-child td { border-bottom: 1pt solid #000; }
+table.tabela td.num, table.tabela th.num { text-align: right; }
+.bloco-quadro { margin: 10pt 0 12pt; }
+.bloco-quadro .legenda { margin-bottom: 4pt; }
+
+/* lista sem marcadores para enumerações no texto */
+ul.alineas { margin: 0 0 6pt 1.25cm; padding: 0; }
+ul.alineas li { margin: 0 0 2pt; }
+
+/* referências (ABNT NBR 6023): espaço simples, alinhadas à esquerda, separadas por uma linha em branco */
+.referencias p { text-indent: 0; text-align: left; line-height: 1.15; margin: 0 0 12pt; break-inside: avoid; }
+.apendice h2 { text-align: center; }
+.quebra { break-before: page; }
+</style>
+</head>
+<body>
+
+<!-- ===================== ELEMENTOS PRÉ-TEXTUAIS ===================== -->
+<p class="titulo">SISTRAFA: aplicação web progressiva para triagem de risco e manejo de fauna silvestre em operações de campo</p>
+<p class="titulo-en">SISTRAFA: a progressive web application for risk triage and wildlife handling in field operations</p>
+
+<p class="autores">Pedro Paulo de Lima<sup>1</sup>, Carolina de Paula Almeida<sup>1</sup>, Jayme Augusto Peres<sup>2</sup></p>
+<p class="afiliacao"><sup>1</sup>Departamento de Ciência da Computação (DECOMP) – Universidade Estadual do Centro-Oeste (UNICENTRO)<br>
+<sup>2</sup>Laboratório de Anatomia Patológica Veterinária – Universidade Estadual do Centro-Oeste (UNICENTRO)<br>
+CEP 85040-167 – Guarapuava – PR – Brasil</p>
+<p class="emails">pppedro95@gmail.com, carol@unicentro.br, perespatologia@gmail.com</p>
+
+<p class="resumo"><b>Resumo:</b> Ocorrências com animais silvestres em áreas urbanas e rurais são frequentemente atendidas por policiais e bombeiros sem formação específica em manejo de fauna, o que pode expor agentes, população e animais a riscos e comprometer a documentação de eventuais crimes ambientais. Este artigo apresenta o SISTRAFA, uma aplicação web progressiva desenvolvida em estágio-pesquisa do curso de Ciência da Computação da Universidade Estadual do Centro-Oeste para apoiar o registro e a triagem de risco dessas ocorrências em campo. A aplicação foi implementada com HTML5, CSS3 e JavaScript, sem servidor de dados, e utiliza Service Worker, localStorage e IndexedDB para funcionar sem conexão após o primeiro acesso. O atendimento é organizado em oito etapas, com perguntas condicionais apresentadas uma por vez, um checklist operacional baseado em protocolo de atuação policial e um conjunto de 22 regras que gera orientações acompanhadas de justificativa. O sistema permite cadastrar animais individuais ou em lotes, registra fotografias com metadados, código SHA-256 e histórico de alterações, preservando o arquivo original, reúne um guia de 29 espécies complementado por dados da API do iNaturalist e gera relatório em PDF no próprio aparelho. A avaliação foi feita por testes automatizados nos navegadores Chrome, Edge e Firefox, que verificaram persistência dos dados, funcionamento sem conexão, geração de relatórios, leiaute em oito dimensões de tela e contraste de cores. Os resultados indicam que os requisitos levantados foram atendidos no ambiente testado; a validação do conteúdo de manejo por especialistas e os testes em dispositivos físicos e com usuários são as próximas etapas.</p>
+<p class="chaves"><b>Palavras-chave:</b> aplicação web progressiva; fauna silvestre; triagem de risco; armazenamento offline; segurança pública.</p>
+
+<p class="resumo"><b>Abstract:</b> Incidents involving wild animals in urban and rural areas are frequently handled by police officers and firefighters without specific training in wildlife handling, which may expose agents, the public and the animals to risk and compromise the documentation of possible environmental crimes. This paper presents SISTRAFA, a progressive web application developed during a research internship in the Computer Science program at the Universidade Estadual do Centro-Oeste to support the recording and risk triage of such incidents in the field. The application was implemented with HTML5, CSS3 and JavaScript, without a data server, and uses a Service Worker, localStorage and IndexedDB to work offline after the first access. Each incident is organized in eight steps, with conditional questions presented one at a time, an operational checklist based on a police field protocol and a set of 22 rules that produces guidance together with its justification. The system supports recording individual animals or batches, stores photographs with metadata, a SHA-256 hash and a change history while preserving the original file, provides a guide of 29 species complemented by data from the iNaturalist API, and generates a PDF report on the device. The evaluation used automated tests in the Chrome, Edge and Firefox browsers, covering data persistence, offline operation, report generation, layout in eight screen sizes and color contrast. The results indicate that the gathered requirements were met in the tested environment; content validation by wildlife specialists and tests on physical devices and with users are the next steps.</p>
+<p class="chaves"><b>Keywords:</b> progressive web app; wildlife; risk triage; offline storage; public safety.</p>
+
+<!-- ===================== 1 INTRODUÇÃO ===================== -->
+<h2>1 Introdução</h2>
+<p>Ocorrências envolvendo animais silvestres, como resgates em residências e vias públicas, animais feridos ou atropelados e apreensões em ações de fiscalização, são atendidas com frequência por policiais e bombeiros. No Paraná, a rede estadual de centros de triagem registrou 6.025 acolhimentos de animais silvestres em 2025, com aumento de 61,3% em um ano; desse total, 574 animais foram atendidos pelo Centro de Triagem e Reabilitação de Animais Silvestres da Universidade Estadual do Centro-Oeste (CETRAS/UNICENTRO), em Guarapuava, que recebe animais provenientes de apreensões, resgates em áreas urbanas e entregas voluntárias (Oliveira, 2026).</p>
+<p>Nesses atendimentos, o agente precisa decidir como se aproximar, conter, transportar, registrar e encaminhar animais de espécies que muitas vezes não conhece. Condutas inadequadas podem causar acidentes: a maioria dos acidentes ofídicos no Brasil é causada por serpentes do grupo botrópico (Brasil, 2024, p. 14), e procedimentos equivocados, como o uso de torniquete, podem agravar o envenenamento (Brasil, 2024, p. 159). Quando há suspeita de crime ambiental, a documentação também tem consequências: os animais apreendidos são recebidos nos Centros de Triagem de Animais Silvestres (Cetas) mediante apresentação dos documentos da apreensão, como boletim de ocorrência, auto de infração ou termo de apreensão (IBAMA, 2021, art. 10).</p>
+<p>O problema tratado neste trabalho é a ausência de uma orientação prática, rápida e padronizada para o agente durante o atendimento, em condições de campo em que a conexão com a internet pode não estar disponível. Os sistemas institucionais existentes, como o Sistema de Informações dos Cetas (SisCetas), destinam-se ao registro feito nos centros de triagem (IBAMA, 2021, art. 12 e 19), e não ao apoio ao agente no local da ocorrência.</p>
+<p>Este artigo apresenta o SISTRAFA, aplicação desenvolvida no estágio-pesquisa do curso de Ciência da Computação da UNICENTRO. O objetivo geral foi investigar, projetar e desenvolver uma aplicação web progressiva (PWA, do inglês <i>Progressive Web App</i>), construída com HTML5, CSS3 e JavaScript, de apoio ao manejo, à triagem de risco e ao registro fotográfico de ocorrências com fauna silvestre, operável sem conexão por agentes de campo. Os objetivos específicos foram: aplicar técnicas de persistência local de dados e de cache para operação sem conexão; implementar o fluxo condicional de triagem de segurança; construir o cadastro de ocorrências individuais e em lotes, com fotografias vinculadas; implementar a extração de metadados das imagens e a geração de relatórios em PDF; e estruturar um guia de consulta de fauna e um catálogo de contatos regionais para destinação.</p>
+<p>O artigo está organizado da seguinte forma: a Seção 2 apresenta a fundamentação teórica; a Seção 3, os trabalhos relacionados; a Seção 4, os materiais e métodos; a Seção 5, o desenvolvimento; a Seção 6, os resultados e a discussão; e a Seção 7, as considerações finais.</p>
+
+<!-- ===================== 2 FUNDAMENTAÇÃO ===================== -->
+<h2>2 Fundamentação teórica</h2>
+<p>Esta seção apresenta os conceitos técnicos e normativos que orientaram as decisões de projeto: a arquitetura de aplicações web progressivas, os mecanismos de armazenamento no navegador, o marco legal e os protocolos de saúde aplicáveis às ocorrências com fauna, os recursos de integridade e metadados de imagens e os critérios de acessibilidade adotados.</p>
+
+<h3>2.1 Aplicações web progressivas</h3>
+<p>Uma aplicação web progressiva é uma aplicação construída com tecnologias da web que utiliza recursos dos navegadores para oferecer comportamento semelhante ao de aplicativos nativos, como instalação no dispositivo e funcionamento sem conexão (MDN Web Docs, 2026b). O componente central é o Service Worker, um script que atua como intermediário entre a aplicação, o navegador e a rede: ele intercepta as requisições e pode respondê-las com recursos previamente armazenados em cache, o que permite o uso da aplicação sem conexão (MDN Web Docs, 2026c; W3C, 2026a). O manifesto da aplicação web descreve nome, ícones e modo de exibição, informações usadas pelo sistema operacional na instalação (W3C, 2026b).</p>
+<p>Biørn-Hansen, Majchrzak e Grønli (2017) analisam as PWAs como possível tecnologia de unificação entre aplicações web e nativas e comparam seu desempenho com o de aplicativos multiplataforma desenvolvidos para o mesmo fim. Em trabalho posterior, Majchrzak, Biørn-Hansen e Grønli (2018) discutem a abordagem para o desenvolvimento multiplataforma e as questões em aberto para sua adoção. Para este projeto, a escolha de uma PWA permitiu manter uma única base de código, distribuída por endereço web, sem dependência de lojas de aplicativos e com funcionamento sem conexão.</p>
+
+<h3>2.2 Persistência de dados no navegador</h3>
+<p>A API Web Storage oferece o armazenamento <i>localStorage</i>, que guarda pares de chave e valor em texto associados à origem da aplicação (MDN Web Docs, 2026e); os navegadores limitam esse armazenamento a 5 MiB por origem (MDN Web Docs, 2026d). O IndexedDB é uma API de baixo nível para armazenamento, no cliente, de volumes maiores de dados estruturados, incluindo arquivos, com suporte a índices e transações (MDN Web Docs, 2026a).</p>
+<p>Os dados armazenados pelos navegadores estão sujeitos a cotas e critérios de remoção. No modo padrão, os dados persistem enquanto a origem estiver abaixo da cota e houver espaço no dispositivo; sob falta de espaço, os navegadores removem primeiro os dados das origens usadas há mais tempo. A aplicação pode solicitar armazenamento persistente pelo método <i>navigator.storage.persist()</i>, e o Safari remove dados criados por script em origens sem interação do usuário nos últimos sete dias de uso do navegador (MDN Web Docs, 2026d). Esses critérios influenciaram as decisões de armazenamento descritas na Seção 5.</p>
+
+<h3>2.3 Ocorrências com fauna silvestre: marco legal e protocolos de saúde</h3>
+<p>A Lei nº 9.605/1998 tipifica como crime matar, perseguir, caçar, apanhar ou utilizar espécimes da fauna silvestre sem a devida permissão (Brasil, 1998, art. 29) e determina que os animais apreendidos sejam prioritariamente libertados em seu habitat ou, quando isso for inviável ou não recomendável por questões sanitárias, entregues a zoológicos, fundações ou entidades assemelhadas (Brasil, 1998, art. 25, § 1º). O Decreto nº 6.514/2008 inclui os centros de triagem entre os destinos possíveis dos animais apreendidos (Brasil, 2008, art. 107, I).</p>
+<p>A Instrução Normativa (IN) Ibama nº 5/2021 estabelece as diretrizes e os procedimentos para a operação dos Cetas e para a destinação de animais apreendidos, resgatados ou entregues espontaneamente (IBAMA, 2021, art. 1). Na triagem, os animais passam por conferência da identificação taxonômica, avaliação clínica, física e comportamental e registro no SisCetas (IBAMA, 2021, art. 12). A mesma norma revogou a IN Ibama nº 23/2014, que tratava do tema anteriormente (IBAMA, 2021, art. 40).</p>
+<p>Na área da saúde, o Guia de Animais Peçonhentos do Brasil reúne critérios de identificação, como a fosseta loreal das serpentes peçonhentas (Brasil, 2024, p. 24) e a recomendação de considerar peçonhenta toda serpente com anéis coloridos em volta do corpo (Brasil, 2024, p. 25), além das condutas de primeiros socorros: lavar o local com água e sabão, manter a vítima em repouso com o membro elevado e não fazer torniquete, cortes ou sucção (Brasil, 2024, p. 163-164; Fundação Nacional de Saúde, 2001, p. 103). O Guia de Vigilância de Epizootias em Primatas Não Humanos estabelece que a morte desses animais deve ser notificada à Secretaria Municipal de Saúde, por se tratar de evento sentinela da febre amarela (Brasil, 2014, p. 12), e o Ministério da Saúde orienta que morcegos e outros animais silvestres não sejam tocados, devido ao risco de raiva (Brasil, [2026]).</p>
+<p>No campo operacional, Dallabrida <i>et al.</i> (2026), em manuscrito em elaboração por pesquisadores da UNICENTRO e da Polícia Militar do Paraná, propõem um protocolo de atuação policial em apreensões de fauna silvestre, baseado em revisão narrativa de diretrizes nacionais e internacionais. O protocolo organiza o atendimento em avaliação inicial, segurança da equipe, manejo e contenção, transporte, registro da ocorrência e destinação, e reúne essas etapas em um checklist operacional. Entre as recomendações estão a avaliação do cenário à distância, o uso de equipamentos de proteção individual (EPI) conforme o risco, a contenção indireta, a separação dos animais por espécie, porte e condição clínica no transporte, o registro do cenário antes de qualquer intervenção e a proibição da soltura imediata sem avaliação técnica, cabendo a destinação final ao órgão ambiental.</p>
+
+<h3>2.4 Integridade e metadados de fotografias</h3>
+<p>O padrão Exif define a estrutura de metadados gravados em imagens por câmeras e celulares, incluindo data e hora da captura, fabricante e modelo do dispositivo e coordenadas geográficas (Camera &amp; Imaging Products Association, 2026). Para verificar se um arquivo foi alterado após o registro, pode-se calcular seu resumo criptográfico pelo algoritmo SHA-256 (National Institute of Standards and Technology, 2015): qualquer modificação no arquivo produz um resumo diferente. Nos navegadores, esse cálculo é disponibilizado pelo método <i>digest</i> da API Web Cryptography (W3C, 2025). Esses recursos não substituem os procedimentos formais de cadeia de custódia, mas permitem que o registro fotográfico produzido em campo seja conferido posteriormente.</p>
+
+<h3>2.5 Acessibilidade e legibilidade</h3>
+<p>As Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.2 estabelecem, no nível AA, razão de contraste de no mínimo 4,5:1 entre texto e fundo (critério 1.4.3) e área de toque mínima de 24 por 24 pixels CSS (critério 2.5.8); no nível AAA, recomendam alvos de 44 por 44 pixels CSS (critério 2.5.5) (W3C, 2023). Em campo, o uso sob luz solar, com luvas e com apenas uma das mãos reforça a necessidade de contraste elevado e de alvos de toque amplos. A interface do SISTRAFA usa superfícies semitransparentes sobre uma fotografia escurecida, sem desfoque de fundo nem efeitos animados, para preservar o contraste e o desempenho em aparelhos simples (Seção 5.9).</p>
+
+<!-- ===================== 3 TRABALHOS RELACIONADOS ===================== -->
+<h2>3 Trabalhos relacionados</h2>
+<p>Lima <i>et al.</i> (2021) apresentam o aplicativo Último Recurso, desenvolvido com Flutter para Android, que orienta a população sobre as ações após acidentes com animais peçonhentos e apoia profissionais de saúde com informações como o soro indicado e a identificação de espécies por imagens. O foco do trabalho é o atendimento à vítima do acidente, e não o manejo do animal ou o registro da ocorrência.</p>
+<p>Chame <i>et al.</i> (2019) descrevem o SISS-Geo, plataforma da Fundação Oswaldo Cruz baseada em ciência cidadã para o monitoramento da saúde da fauna silvestre. Colaboradores registram, por aplicativos para Android e iOS, observações georreferenciadas e fotografias dos animais e de suas condições físicas; os dados alimentam modelos de alerta, aplicados, por exemplo, a epizootias de febre amarela. O SISS-Geo é voltado à vigilância em saúde, e não à triagem de risco durante o atendimento.</p>
+<p>O iNaturalist é uma plataforma de registro de observações de biodiversidade na qual a comunidade contribui para a identificação das espécies; seus dados são disponibilizados por uma interface de programação pública (iNaturalist, [2026]), utilizada pelo SISTRAFA como fonte complementar do guia de fauna. O Quadro 1 compara esses trabalhos com a proposta deste artigo. Entre os trabalhos analisados, nenhum combina, em um mesmo sistema voltado a agentes de segurança pública, triagem condicional com orientações justificadas, cadastro de animais em lotes, registro fotográfico com verificação de integridade e relatório gerado sem conexão.</p>
+
+<div class="bloco-quadro">
+<p class="legenda"><b>Quadro 1</b> – Comparação entre os trabalhos relacionados e o SISTRAFA</p>
+<table class="quadro">
+<thead><tr><th style="width:17%">Trabalho</th><th style="width:21%">Público-alvo</th><th style="width:20%">Plataforma</th><th style="width:42%">Funções principais</th></tr></thead>
+<tbody>
+<tr><td>Último Recurso (Lima <i>et al.</i>, 2021)</td><td>População e profissionais de saúde</td><td>Aplicativo Android (Flutter)</td><td>Orientação após acidentes com animais peçonhentos; identificação de espécies por imagens; indicação de soro</td></tr>
+<tr><td>SISS-Geo (Chame <i>et al.</i>, 2019)</td><td>Cidadãos colaboradores e vigilância em saúde</td><td>Aplicativos Android e iOS, servidor web</td><td>Registro fotográfico georreferenciado de animais e de suas condições; alertas de risco à saúde</td></tr>
+<tr><td>iNaturalist (iNaturalist, [2026])</td><td>Público geral e pesquisadores</td><td>Web, aplicativos e API pública</td><td>Registro de observações; identificação colaborativa; consulta a dados de espécies</td></tr>
+<tr><td>SISTRAFA (este trabalho)</td><td>Policiais e bombeiros</td><td>Aplicação web progressiva, sem servidor de dados</td><td>Triagem de risco condicional com orientações justificadas; cadastro em lotes; fotografias com SHA-256 e histórico; guia e contatos; relatório PDF sem conexão</td></tr>
+</tbody>
+</table>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</div>
+
+<!-- ===================== 4 MATERIAIS E MÉTODOS ===================== -->
+<h2>4 Materiais e métodos</h2>
+<p>O trabalho combinou pesquisa aplicada com desenvolvimento iterativo e incremental de software, organizado nas quatro fases previstas no plano de estágio: investigação e fundamentação teórica, projeto centrado no usuário, desenvolvimento incremental e validação técnica.</p>
+
+<h3>4.1 Tecnologias</h3>
+<p>A aplicação foi escrita em HTML5, CSS3 e JavaScript (ECMAScript 2015 ou posterior), sem <i>frameworks</i> de interface. Duas bibliotecas de terceiros são distribuídas junto com a aplicação, para que funcionem sem conexão: jsPDF 2.5.2, para a criação de documentos PDF no navegador (Parallax, 2026), e jsPDF-AutoTable 3.8.4, para a montagem de tabelas nesses documentos (Bengtsson, 2024). O guia de fauna consulta a API pública do iNaturalist, versão 1.3.0 (iNaturalist, [2026]). Os testes automatizados foram escritos em JavaScript para o ambiente Node.js e controlam os navegadores Google Chrome 155 e Microsoft Edge 155 pelo Chrome DevTools Protocol (Google, [2026]) e o Mozilla Firefox 158 pelo protocolo WebDriver BiDi (W3C, 2026c).</p>
+
+<h3>4.2 Procedimentos</h3>
+<p>Na fase de investigação, além da revisão da documentação técnica e normativa da Seção 2, os requisitos foram levantados por meio de um questionário estruturado em dez seções, respondido pelo demandante do projeto, que tratou da finalidade da aplicação, do perfil dos usuários, do fluxo da ocorrência, das perguntas de triagem, da identificação de espécies, das fotografias, dos relatórios e das funções indispensáveis (Apêndice A). As respostas foram convertidas nos requisitos apresentados na Seção 5.1 e na árvore de decisão da Seção 5.3. Na etapa final, a aplicação foi comparada item a item com o protocolo de Dallabrida <i>et al.</i> (2026), fornecido pela coorientação, e os itens ausentes foram incorporados (Seção 5.4).</p>
+<p>Na fase de projeto, as telas foram concebidas para uso em celulares, com uma das mãos e sob luz solar, considerando usuários sem formação técnica em fauna. O desenvolvimento ocorreu em ciclos curtos, na ordem: fluxo condicional da ocorrência; módulo fotográfico; geração de relatório; guia de fauna e contatos; e refinamento da interface. Cada ciclo foi seguido de testes automatizados.</p>
+<p>Na fase de validação técnica, os testes executaram os navegadores sem interface gráfica (modo <i>headless</i>), em computador com Windows 11, emulando telas de celular, tablet e computador. Por meio do Chrome DevTools Protocol, os testes simularam toques e preenchimentos, desativaram a rede para verificar o funcionamento sem conexão, simularam inclinação do aparelho e provocaram falha de gravação por falta de espaço. Os dados usados nos testes foram fictícios e criados em perfis temporários do navegador. A validação do conteúdo de manejo junto a profissionais do CETRAS/UNICENTRO, prevista no plano de estágio, não havia sido realizada até a conclusão deste artigo.</p>
+
+<h3>4.3 Declaração de uso de inteligência artificial</h3>
+<p>Ferramentas de inteligência artificial generativa foram utilizadas neste trabalho. O assistente de programação Claude Code (Anthropic, [2026]) foi empregado na geração e na revisão do código-fonte, na escrita dos testes automatizados, na busca e conferência preliminar de referências e na redação de versão preliminar deste artigo. O logotipo da aplicação foi gerado com o ChatGPT (OpenAI, 2026), conforme registrado nos metadados de procedência do arquivo. As decisões de projeto, a definição dos requisitos com a parte demandante e a revisão do conteúdo são de responsabilidade dos autores, que verificaram as informações e as referências antes da submissão.</p>
+
+<!-- ===================== 5 DESENVOLVIMENTO ===================== -->
+<h2>5 Desenvolvimento</h2>
+<p>Esta seção descreve os requisitos, a arquitetura e os módulos da aplicação.</p>
+
+<h3>5.1 Requisitos</h3>
+<p>O Quadro 2 apresenta os requisitos funcionais (RF) e não funcionais (RNF), com a indicação da seção do questionário de requisitos (Q), do plano de estágio ou do protocolo de Dallabrida <i>et al.</i> (2026), indicado como "Protocolo", que lhes deu origem.</p>
+
+<div class="bloco-quadro">
+<p class="legenda"><b>Quadro 2</b> – Requisitos funcionais e não funcionais do SISTRAFA</p>
+<table class="quadro">
+<thead><tr><th style="width:9%">Código</th><th style="width:73%">Descrição</th><th style="width:18%">Origem</th></tr></thead>
+<tbody>
+<tr><td>RF01</td><td>Criar perfil local, sem conta on-line, com nome, instituição, cargo e identificação funcional; proteger o acesso por PIN opcional</td><td>Q 2.4</td></tr>
+<tr><td>RF02</td><td>Abrir ocorrência com número, data, hora, responsável e localização (quando autorizada) registrados automaticamente</td><td>Q 3.2</td></tr>
+<tr><td>RF03</td><td>Conduzir a triagem por perguntas condicionais, uma por vez, com orientações de segurança, manejo e encaminhamento</td><td>Q 3.5, 4.3, 4.4</td></tr>
+<tr><td>RF04</td><td>Apresentar a justificativa de cada orientação</td><td>Q 4.5</td></tr>
+<tr><td>RF05</td><td>Cadastrar animais individuais e lotes por grupo e espécie, destacando indivíduos que exigem atenção</td><td>Q 3.4</td></tr>
+<tr><td>RF06</td><td>Permitir a opção "espécie não identificada" e manter a identificação como provisória até a confirmação</td><td>Q 5.1, 5.2</td></tr>
+<tr><td>RF07</td><td>Registrar fotografias vinculadas a animal, lote ou recinto, com metadados automáticos, preservação do original e histórico de alterações</td><td>Q 6.2 a 6.4</td></tr>
+<tr><td>RF08</td><td>Oferecer guia de consulta de grupos e espécies e catálogo de instituições para destinação, com indicação de atendimento 24 horas</td><td>Q 1.3, 5.1</td></tr>
+<tr><td>RF09</td><td>Apresentar tela de revisão para correção das respostas antes do encerramento</td><td>Q 4.3</td></tr>
+<tr><td>RF10</td><td>Gerar relatório em PDF com os itens definidos pelo demandante, cujo compartilhamento é decidido pelo usuário</td><td>Q 7.1 a 7.3</td></tr>
+<tr><td>RF11</td><td>Oferecer, na tela inicial, acesso rápido a orientações para situações de risco</td><td>Q 3.1</td></tr>
+<tr><td>RF12</td><td>Apresentar checklist operacional por etapa (avaliação inicial, segurança da equipe, manejo, transporte, registro e destinação) e lista de EPI</td><td>Protocolo</td></tr>
+<tr><td>RF13</td><td>Registrar as condições em que os animais são mantidos, o comportamento observado e as verificações feitas durante o transporte</td><td>Protocolo</td></tr>
+<tr><td>RF14</td><td>Registrar os horários de cada etapa, com pausas e retomadas, e a identificação de quem recebe os animais (nome, função, registro na instituição e CRMV ou documento)</td><td>Testes dos consultores</td></tr>
+<tr><td>RNF01</td><td>Funcionar sem conexão após o primeiro acesso, mantendo os dados somente no aparelho</td><td>Q 2.4, 10; plano</td></tr>
+<tr><td>RNF02</td><td>Utilizar HTML5, CSS3 e JavaScript, sem servidor de dados</td><td>Plano, seção 2.2</td></tr>
+<tr><td>RNF03</td><td>Garantir legibilidade em campo: contraste mínimo de 4,5:1, tema claro, modo de alto contraste e três tamanhos de texto</td><td>Plano, seção 3.3</td></tr>
+<tr><td>RNF04</td><td>Adotar alvos de toque de 44 pixels CSS e uso com uma das mãos</td><td>Plano, seção 3.3</td></tr>
+<tr><td>RNF05</td><td>Declarar o caráter auxiliar da ferramenta, que não substitui documentos oficiais nem a cadeia de custódia</td><td>Q 1.1, 10</td></tr>
+<tr><td>RNF06</td><td>Funcionar em celulares simples e antigos, de 280 pixels de largura em diante, em tela cheia e na posição vertical; no aplicativo Android, a partir da versão 7.0</td><td>Uso em celular</td></tr>
+</tbody>
+</table>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</div>
+
+<h3>5.2 Arquitetura</h3>
+<p>A Figura 1 apresenta a arquitetura da aplicação, composta por quatro partes: a camada de interface, a lógica da aplicação, a persistência no aparelho e o Service Worker. A interface é uma aplicação de página única: as telas são geradas em JavaScript conforme o endereço após o caractere "#", o que permite o uso dos botões de navegação do navegador sem recarregar a página. O código-fonte próprio soma 4.734 linhas, distribuídas em um arquivo HTML, uma folha de estilos e nove arquivos JavaScript, sem contar as bibliotecas de terceiros nem o invólucro Android descrito na Seção 5.10.</p>
+
+<figure>
+<p class="legenda"><b>Figura 1</b> – Arquitetura do SISTRAFA</p>
+<svg width="16cm" viewBox="0 0 780 500" role="img" aria-label="Diagrama da arquitetura do SISTRAFA"><defs><marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222"/></marker></defs>
+<g fill="#000">
+<rect x="10" y="10" width="560" height="104" rx="8" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/>
+<text x="22" y="32" font-size="16" font-weight="700">Camada de interface (HTML5 e CSS3)</text>
+<rect x="22" y="42" width="172" height="62" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="108" y="68.5" text-anchor="middle" font-size="15.5">Telas e rotas</text><text x="108" y="87.5" text-anchor="middle" font-size="13.5">aplicativo.js</text>
+<rect x="204" y="42" width="172" height="62" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="290" y="68.5" text-anchor="middle" font-size="15.5">Componentes e estilos</text><text x="290" y="87.5" text-anchor="middle" font-size="13.5">interface.js, estilos.css</text>
+<rect x="386" y="42" width="172" height="62" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="472" y="68.5" text-anchor="middle" font-size="15.5">Página única</text><text x="472" y="87.5" text-anchor="middle" font-size="13.5">index.html</text>
+<rect x="10" y="136" width="560" height="182" rx="8" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/>
+<text x="22" y="158" font-size="16" font-weight="700">Lógica da aplicação (JavaScript)</text>
+<rect x="22" y="168" width="172" height="68" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="108" y="189" text-anchor="middle" font-size="15.5">Fluxo e motor de</text><text x="108" y="207" text-anchor="middle" font-size="15.5">orientações</text><text x="108" y="225" text-anchor="middle" font-size="13.5">ocorrencia.js</text>
+<rect x="204" y="168" width="172" height="68" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="290" y="189" text-anchor="middle" font-size="15.5">Base de conteúdo:</text><text x="290" y="207" text-anchor="middle" font-size="15.5">espécies e perguntas</text><text x="290" y="225" text-anchor="middle" font-size="13.5">dados.js</text>
+<rect x="386" y="168" width="172" height="68" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="472" y="189" text-anchor="middle" font-size="15.5">Relatório PDF</text><text x="472" y="207" text-anchor="middle" font-size="13.5">relatorio-pdf.js</text><text x="472" y="225" text-anchor="middle" font-size="13.5">jsPDF e AutoTable</text>
+<rect x="22" y="244" width="172" height="64" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="108" y="271.5" text-anchor="middle" font-size="15.5">Acesso aos dados</text><text x="108" y="290.5" text-anchor="middle" font-size="13.5">armazenamento.js</text>
+<rect x="204" y="244" width="172" height="64" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="290" y="271.5" text-anchor="middle" font-size="15.5">Metadados Exif</text><text x="290" y="290.5" text-anchor="middle" font-size="13.5">exif.js</text>
+<rect x="386" y="244" width="172" height="64" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="472" y="271.5" text-anchor="middle" font-size="15.5">Guia on-line</text><text x="472" y="290.5" text-anchor="middle" font-size="13.5">fauna-online.js</text>
+<rect x="10" y="340" width="560" height="152" rx="8" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/>
+<text x="22" y="362" font-size="16" font-weight="700">Persistência no aparelho</text>
+<rect x="22" y="372" width="172" height="110" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="108" y="400.5" text-anchor="middle" font-size="15.5" font-weight="700">localStorage</text><text x="108" y="421.5" text-anchor="middle" font-size="14.5">perfil, ajustes,</text><text x="108" y="442.5" text-anchor="middle" font-size="14.5">ocorrências, lotes</text><text x="108" y="463.5" text-anchor="middle" font-size="14.5">e contatos</text>
+<rect x="204" y="372" width="172" height="110" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="290" y="400.5" text-anchor="middle" font-size="15.5" font-weight="700">IndexedDB</text><text x="290" y="421.5" text-anchor="middle" font-size="14.5">fotos originais,</text><text x="290" y="442.5" text-anchor="middle" font-size="14.5">recortes, metadados</text><text x="290" y="463.5" text-anchor="middle" font-size="14.5">e SHA-256</text>
+<rect x="386" y="372" width="172" height="110" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="472" y="400.5" text-anchor="middle" font-size="15.5" font-weight="700">Cache Storage</text><text x="472" y="421.5" text-anchor="middle" font-size="14.5">arquivos do app,</text><text x="472" y="442.5" text-anchor="middle" font-size="14.5">imagens do guia,</text><text x="472" y="463.5" text-anchor="middle" font-size="14.5">respostas da API</text>
+<rect x="592" y="10" width="178" height="104" rx="7" fill="#fff" stroke="#05614B" stroke-width="2"/><text x="681" y="37" text-anchor="middle" font-size="15.5" font-weight="700">APIs do navegador</text><text x="681" y="57" text-anchor="middle" font-size="14.5">Geolocation</text><text x="681" y="77" text-anchor="middle" font-size="14.5">Web Crypto (SHA-256)</text><text x="681" y="97" text-anchor="middle" font-size="14.5">câmera e arquivos</text>
+<rect x="592" y="136" width="178" height="182" rx="7" fill="#fff" stroke="#05614B" stroke-width="2"/><text x="681" y="179.5" text-anchor="middle" font-size="15.5" font-weight="700">Service Worker</text><text x="681" y="200.5" text-anchor="middle" font-size="13.5">servico-offline.js</text><text x="681" y="221.5" text-anchor="middle" font-size="14.5">intercepta as</text><text x="681" y="242.5" text-anchor="middle" font-size="14.5">requisições e usa</text><text x="681" y="263.5" text-anchor="middle" font-size="14.5">o cache quando</text><text x="681" y="284.5" text-anchor="middle" font-size="14.5">não há conexão</text>
+<rect x="592" y="372" width="178" height="110" rx="7" fill="#fff" stroke="#555" stroke-width="1.2" stroke-dasharray="7 5"/><text x="681" y="410" text-anchor="middle" font-size="15.5" font-weight="700">API do iNaturalist</text><text x="681" y="432" text-anchor="middle" font-size="14.5">consulta opcional,</text><text x="681" y="454" text-anchor="middle" font-size="14.5">somente com conexão</text>
+</g>
+<g stroke="#222" stroke-width="2" fill="none">
+<line x1="290" y1="114" x2="290" y2="134" marker-start="url(#s1)" marker-end="url(#s1)"/>
+<line x1="290" y1="318" x2="290" y2="338" marker-start="url(#s1)" marker-end="url(#s1)"/>
+<line x1="570" y1="62" x2="590" y2="62" marker-end="url(#s1)"/>
+<line x1="558" y1="276" x2="590" y2="276" marker-end="url(#s1)"/>
+<line x1="700" y1="318" x2="700" y2="370" marker-end="url(#s1)"/>
+<path d="M 620 318 L 620 330 L 472 330 L 472 370" marker-end="url(#s1)"/>
+</g></svg>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</figure>
+
+<p>Os dados são divididos entre dois mecanismos, de acordo com os critérios da Seção 2.2. O perfil, os ajustes, as ocorrências e os contatos, que ocupam pouco espaço, ficam no <i>localStorage</i>; as fotografias, que podem ter vários megabytes cada, ficam no IndexedDB, em um repositório indexado pelo identificador da ocorrência. As fotografias são incluídas pelo método <i>add</i>, que falha se já existir um registro com o mesmo identificador, de modo que nenhuma imagem é substituída sem registro. Para reduzir o risco de remoção dos dados pelo navegador, a tela de perfil permite solicitar armazenamento persistente quando o navegador não o concede.</p>
+<p>O Service Worker adota três estratégias de cache. Os arquivos da aplicação são buscados primeiro na rede, para receber atualizações, e no cache quando não há conexão; as imagens do guia são buscadas primeiro no cache, pois não mudam; e as respostas da API do iNaturalist são buscadas na rede e armazenadas para consulta posterior sem conexão. A cada nova versão da aplicação, o nome do cache é alterado e os arquivos antigos são removidos.</p>
+
+<h3>5.3 Fluxo da ocorrência e motor de orientações</h3>
+<p>Cada ocorrência recebe um número no formato SIS-AAAAMMDD-NNN e é conduzida em oito etapas (Figura 2). O progresso é gravado a cada alteração, de modo que o atendimento pode ser interrompido e retomado. Um indicador no topo da tela mostra o resultado real da última gravação ("Salvando", "Salvo no aparelho" ou "Erro: não foi salvo").</p>
+
+<figure>
+<p class="legenda"><b>Figura 2</b> – Etapas de uma ocorrência no SISTRAFA</p>
+<svg width="16cm" viewBox="0 0 780 250" role="img" aria-label="Diagrama com as oito etapas da ocorrência"><defs><marker id="s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222"/></marker></defs>
+<g fill="#000">
+<rect x="6" y="10" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="94.5" y="43" text-anchor="middle" font-size="15.5" font-weight="700">1 Abertura</text><text x="94.5" y="65" text-anchor="middle" font-size="14.5">local, ambiente,</text><text x="94.5" y="87" text-anchor="middle" font-size="14.5">motivo e GPS</text>
+<rect x="203" y="10" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="291.5" y="43" text-anchor="middle" font-size="15.5" font-weight="700">2 Avaliação de risco</text><text x="291.5" y="65" text-anchor="middle" font-size="14.5">7 perguntas</text><text x="291.5" y="87" text-anchor="middle" font-size="14.5">condicionais</text>
+<rect x="400" y="10" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="488.5" y="43" text-anchor="middle" font-size="15.5" font-weight="700">3 Contexto</text><text x="488.5" y="65" text-anchor="middle" font-size="14.5">9 perguntas: condições,</text><text x="488.5" y="87" text-anchor="middle" font-size="14.5">feridos e crime</text>
+<rect x="597" y="10" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="685.5" y="43" text-anchor="middle" font-size="15.5" font-weight="700">4 Fotos do local</text><text x="685.5" y="65" text-anchor="middle" font-size="14.5">antes de alterar</text><text x="685.5" y="87" text-anchor="middle" font-size="14.5">a cena</text>
+<rect x="6" y="145" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="94.5" y="178" text-anchor="middle" font-size="15.5" font-weight="700">8 Revisão</text><text x="94.5" y="200" text-anchor="middle" font-size="14.5">pendências,</text><text x="94.5" y="222" text-anchor="middle" font-size="14.5">encerramento, PDF</text>
+<rect x="203" y="145" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="291.5" y="178" text-anchor="middle" font-size="15.5" font-weight="700">7 Encaminhamento</text><text x="291.5" y="200" text-anchor="middle" font-size="14.5">destino, transporte</text><text x="291.5" y="222" text-anchor="middle" font-size="14.5">e entrega</text>
+<rect x="400" y="145" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="488.5" y="178" text-anchor="middle" font-size="15.5" font-weight="700">6 Manejo</text><text x="488.5" y="200" text-anchor="middle" font-size="14.5">contenção, checklist</text><text x="488.5" y="222" text-anchor="middle" font-size="14.5">e acondicionamento</text>
+<rect x="597" y="145" width="177" height="100" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="685.5" y="178" text-anchor="middle" font-size="15.5" font-weight="700">5 Animais e lotes</text><text x="685.5" y="200" text-anchor="middle" font-size="14.5">grupo, espécie,</text><text x="685.5" y="222" text-anchor="middle" font-size="14.5">quantidade, condição</text>
+</g>
+<g stroke="#222" stroke-width="2" fill="none" marker-end="url(#s2)">
+<line x1="183" y1="60" x2="201" y2="60"/><line x1="380" y1="60" x2="398" y2="60"/><line x1="577" y1="60" x2="595" y2="60"/>
+<line x1="685" y1="110" x2="685" y2="143"/>
+<line x1="597" y1="195" x2="582" y2="195"/><line x1="400" y1="195" x2="385" y2="195"/><line x1="203" y1="195" x2="188" y2="195"/>
+</g></svg>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</figure>
+
+<p>As etapas 2 e 3 apresentam uma pergunta por vez, com as respostas "Sim", "Não" e "Não sei", ou com opções específicas, conforme solicitado no questionário de requisitos para reduzir a chance de que alguma etapa seja ignorada. Algumas perguntas só aparecem em determinadas condições: a pergunta sobre a capacidade da equipe de manejar o animal com segurança é exibida apenas quando as respostas anteriores indicam risco imediato, animal peçonhento, risco de agressão ou grande porte, e a pergunta sobre as condições em que os animais são mantidos (superlotação, ventilação, exposição ao sol, sujeira, falta de água ou de abrigo) só aparece quando o animal está contido, preso, em cativeiro ou sendo transportado. Respostas de perguntas que deixam de ser exibidas, porque a resposta que as condicionava foi alterada, são desconsideradas pelas regras. A Figura 3 apresenta a árvore de decisão da avaliação de risco. Ao final de cada etapa, uma tela de resumo lista as respostas, e cada linha permite voltar à pergunta para alterá-la (Figura 4c).</p>
+
+<p>Além das orientações associadas a cada resposta, um motor de regras combina as respostas da triagem com os dados dos animais cadastrados e gera, a cada atualização, uma lista de orientações ordenada por gravidade: perigo, atenção, informação e situação sem risco crítico. O motor possui 22 regras. Cada orientação traz um texto de justificativa construído a partir dos dados que a ativaram, como em "Por quê: Lote 1 (aves) apresenta ferimentos e sangramento", atendendo ao requisito RF04. Além do rótulo de cor, as orientações de perigo e atenção exibem ícone próprio e a palavra "Perigo" ou "Atenção", para que a gravidade não seja comunicada apenas pela cor. O Quadro 3 apresenta uma seleção das regras e a base de cada uma.</p>
+
+
+
+
+
+<div class="bloco-quadro">
+<p class="legenda"><b>Quadro 3</b> – Seleção de regras do motor de orientações e respectivas bases</p>
+<table class="quadro">
+<thead><tr><th style="width:37%">Condição</th><th style="width:35%">Orientação gerada</th><th style="width:28%">Base</th></tr></thead>
+<tbody>
+<tr><td>Risco imediato para pessoas ou animais</td><td>Afastar pessoas e isolar o local</td><td>Questionário, Q 3.5</td></tr>
+<tr><td>Animal peçonhento, possivelmente peçonhento ou espécie peçonhenta cadastrada</td><td>Manter distância, conter apenas com equipamento adequado e transportar em caixa rígida, trancada e identificada</td><td>Brasil (2024, p. 25); Goiás ([2014?], p. 101); Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Superlotação, pouca ventilação, sol, sujeira, falta de água ou de abrigo</td><td>Fotografar e, em seguida, melhorar as condições, sem soltar os animais</td><td>Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Fezes acumuladas, animal morto ou risco de zoonose</td><td>Luvas de nitrilo e, em ambiente com poeira ou amônia, máscara P2</td><td>Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Animal ferido, com sangramento, dificuldade respiratória, debilitado, inconsciente ou apático</td><td>Atendimento veterinário prioritário, com manipulação mínima</td><td>Questionário, Q 3.5; Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Suspeita de crime ambiental</td><td>Documentar e preservar vestígios antes de alterar o local</td><td>Questionário, Q 3.5</td></tr>
+<tr><td>Suspeita de crime, apreensão, cativeiro ou transporte ilegal</td><td>Não realizar soltura imediata; encaminhar a instituição habilitada e avisar o destino</td><td>IBAMA (2021, art. 10-13); Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Piora registrada em verificação durante o transporte</td><td>Avisar o destino e priorizar o atendimento veterinário</td><td>Dallabrida <i>et al.</i> (2026)</td></tr>
+<tr><td>Primata (bugio) morto</td><td>Notificar a vigilância em saúde do município</td><td>Brasil (2014, p. 12)</td></tr>
+<tr><td>Morcego, sagui ou risco de zoonose</td><td>Não tocar sem luvas; em caso de mordida, lavar e procurar atendimento</td><td>Brasil ([2026])</td></tr>
+<tr><td>Sagui-de-tufo-preto (exótico no Paraná)</td><td>Não realizar soltura</td><td>Paraná ([2020?])</td></tr>
+<tr><td>Espécie ou grupo não identificado</td><td>Manter identificação provisória e adotar a conduta mais cautelosa</td><td>Questionário, Q 5.2</td></tr>
+<tr><td>Animais saudáveis, nativos e encontrados livres, sem crime, apreensão ou cativeiro</td><td>Avaliar soltura conforme o protocolo da instituição; na dúvida, avaliação técnica</td><td>Brasil (1998, art. 25, § 1º; 2008, art. 107, I); Dallabrida <i>et al.</i> (2026)</td></tr>
+</tbody>
+</table>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</div>
+
+<figure>
+<p class="legenda"><b>Figura 3</b> – Árvore de decisão da etapa de avaliação de risco</p>
+<svg width="16cm" viewBox="0 0 780 566" role="img" aria-label="Árvore de decisão com sete perguntas e as orientações exibidas"><defs><marker id="s3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#222"/></marker></defs><g fill="#000"><rect x="10" y="10" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="32" text-anchor="middle" font-size="15.5" font-weight="700">P1 Há risco imediato para</text><text x="185" y="52" text-anchor="middle" font-size="15.5" font-weight="700">pessoas ou outros animais?</text><rect x="470" y="10" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="32" text-anchor="middle" font-size="14.5">Afastar pessoas, isolar o local e</text><text x="620" y="52" text-anchor="middle" font-size="14.5">solicitar equipe especializada</text><text x="415" y="37" text-anchor="middle" font-size="13.5" font-style="italic">Sim</text><rect x="10" y="82" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="114" text-anchor="middle" font-size="15.5" font-weight="700">P2 O animal está vivo ou morto?</text><rect x="470" y="82" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="104" text-anchor="middle" font-size="14.5">Morto: usar luvas e preservar o local;</text><text x="620" y="124" text-anchor="middle" font-size="14.5">não sabe: tratar como vivo</text><text x="415" y="94" text-anchor="middle" font-size="13.5" font-style="italic">Morto,</text><text x="415" y="109" text-anchor="middle" font-size="13.5" font-style="italic">não sei</text><rect x="10" y="154" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="176" text-anchor="middle" font-size="15.5" font-weight="700">P3 O animal é ou pode</text><text x="185" y="196" text-anchor="middle" font-size="15.5" font-weight="700">ser peçonhento?</text><rect x="470" y="154" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="176" text-anchor="middle" font-size="14.5">Manter distância; conter apenas com</text><text x="620" y="196" text-anchor="middle" font-size="14.5">equipamento e pessoa capacitada</text><text x="415" y="166" text-anchor="middle" font-size="13.5" font-style="italic">Sim,</text><text x="415" y="181" text-anchor="middle" font-size="13.5" font-style="italic">não sei</text><rect x="10" y="226" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="248" text-anchor="middle" font-size="15.5" font-weight="700">P4 Há risco de mordida, bicada,</text><text x="185" y="268" text-anchor="middle" font-size="15.5" font-weight="700">arranhadura ou coice?</text><rect x="470" y="226" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="248" text-anchor="middle" font-size="14.5">Usar EPI e equipamento de contenção;</text><text x="620" y="268" text-anchor="middle" font-size="14.5">não encurralar o animal</text><text x="415" y="253" text-anchor="middle" font-size="13.5" font-style="italic">Sim</text><rect x="10" y="298" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="320" text-anchor="middle" font-size="15.5" font-weight="700">P5 É de grande porte ou exige</text><text x="185" y="340" text-anchor="middle" font-size="15.5" font-weight="700">contenção especializada?</text><rect x="470" y="298" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="320" text-anchor="middle" font-size="14.5">Isolar a área e acionar equipe com</text><text x="620" y="340" text-anchor="middle" font-size="14.5">equipamento e médico-veterinário</text><text x="415" y="325" text-anchor="middle" font-size="13.5" font-style="italic">Sim</text><rect x="10" y="370" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2"/><text x="185" y="392" text-anchor="middle" font-size="15.5" font-weight="700">P6 Está em via ou rodovia, com</text><text x="185" y="412" text-anchor="middle" font-size="15.5" font-weight="700">risco para o trânsito?</text><rect x="470" y="370" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="402" text-anchor="middle" font-size="14.5">Sinalizar a via e usar colete refletivo</text><text x="415" y="397" text-anchor="middle" font-size="13.5" font-style="italic">Sim</text><rect x="10" y="442" width="350" height="54" rx="7" fill="#f2f2f2" stroke="#05614B" stroke-width="2" stroke-dasharray="7 5"/><text x="185" y="464" text-anchor="middle" font-size="15.5" font-weight="700">P7 A equipe consegue manejar</text><text x="185" y="484" text-anchor="middle" font-size="15.5" font-weight="700">o animal com segurança?</text><rect x="470" y="442" width="300" height="54" rx="7" fill="#fff" stroke="#555" stroke-width="1.2"/><text x="620" y="464" text-anchor="middle" font-size="14.5">Não realizar o manejo; manter o</text><text x="620" y="484" text-anchor="middle" font-size="14.5">isolamento e aguardar apoio</text><text x="415" y="454" text-anchor="middle" font-size="13.5" font-style="italic">Não,</text><text x="415" y="469" text-anchor="middle" font-size="13.5" font-style="italic">não sei</text><rect x="85" y="514" width="200" height="46" rx="7" fill="#fff" stroke="#05614B" stroke-width="2"/><text x="185" y="542" text-anchor="middle" font-size="15.5" font-weight="700">Resumo das respostas</text><text x="470" y="532" font-size="13.5" font-style="italic">P7 só é exibida se P1, P3, P4 ou P5</text><text x="470" y="550" font-size="13.5" font-style="italic">indicarem risco (contorno tracejado)</text></g><g stroke="#222" stroke-width="2" fill="none" marker-end="url(#s3)"><line x1="360" y1="43" x2="468" y2="43"/><line x1="185" y1="64" x2="185" y2="80"/><line x1="360" y1="115" x2="468" y2="115"/><line x1="185" y1="136" x2="185" y2="152"/><line x1="360" y1="187" x2="468" y2="187"/><line x1="185" y1="208" x2="185" y2="224"/><line x1="360" y1="259" x2="468" y2="259"/><line x1="185" y1="280" x2="185" y2="296"/><line x1="360" y1="331" x2="468" y2="331"/><line x1="185" y1="352" x2="185" y2="368"/><line x1="360" y1="403" x2="468" y2="403"/><line x1="185" y1="424" x2="185" y2="440"/><line x1="360" y1="475" x2="468" y2="475"/><line x1="185" y1="496" x2="185" y2="512"/></g></svg>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</figure>
+
+<p>Algumas regras derivam diretamente das respostas do questionário de requisitos, e não de documento oficial; elas são identificadas no Quadro 3 e constituem o principal objeto da validação de conteúdo prevista com o CETRAS/UNICENTRO. A Figura 4 apresenta a tela inicial, uma pergunta da avaliação de risco com a orientação correspondente e o resumo das respostas.</p>
+
+<figure>
+<p class="legenda"><b>Figura 4</b> – Tela inicial (a), pergunta da avaliação de risco com orientação (b) e resumo das respostas (c)</p>
+<div class="telas">
+  <div><img src="../figuras/tela-inicio.jpg" alt="Tela inicial do SISTRAFA"><span>(a)</span></div>
+  <div><img src="../figuras/tela-pergunta.jpg" alt="Pergunta sobre risco imediato com orientação de perigo"><span>(b)</span></div>
+  <div><img src="../figuras/tela-resumo.jpg" alt="Resumo das respostas da avaliação de risco"><span>(c)</span></div>
+</div>
+<p class="fonte">Fonte: elaborado pelos autores (2026), com dados fictícios.</p>
+</figure>
+
+<h3>5.4 Checklist operacional, condições dos animais e transporte</h3>
+<p>A comparação com o protocolo de Dallabrida <i>et al.</i> (2026) mostrou que a versão anterior da aplicação cobria a avaliação de risco, o registro fotográfico e o encaminhamento, mas não apresentava checklist por etapa, recomendações de EPI por tipo de risco, registro das condições de acondicionamento e do comportamento dos animais, nem acompanhamento do transporte. Esses itens foram incorporados (requisitos RF12 e RF13). O checklist operacional do protocolo foi reproduzido em seis blocos, com 29 itens, distribuídos nas etapas em que cada ação ocorre: avaliação inicial, segurança da equipe, manejo e contenção e transporte na etapa de manejo; registro da ocorrência na etapa de fotografias; e destinação na etapa de encaminhamento (Figura 5a). Cada bloco mostra quantos itens foram marcados, e o relatório lista todos os itens com a respectiva marcação. Para não perder dados de ocorrências gravadas pela versão anterior, os itens que já existiam mantiveram seus identificadores, e os registros antigos recebem os campos novos no momento da leitura.</p>
+<p>A etapa de manejo passou a exibir a lista de EPI do protocolo, e as orientações por grupo foram revisadas com as técnicas de contenção e de transporte de cada grupo: aves contidas sem compressão do tórax, lagartos nunca segurados pela cauda, quelônios apoiados pelas laterais do casco, anfíbios em recipiente plástico úmido em vez de saco de pano e serpentes peçonhentas em caixa rígida, trancada e identificada. No cadastro de lotes foi incluído o comportamento observado (apatia, medo intenso, agressividade e movimentos repetitivos), e a etapa de contexto recebeu a pergunta condicional sobre as condições em que os animais são mantidos. Cinco regras novas usam essas informações (Quadro 3).</p>
+<p>Na etapa de encaminhamento, quando o destino é uma instituição, o agente pode registrar verificações durante o transporte, com data, hora e sinais observados (Figura 5b), como o protocolo recomenda para trajetos longos; uma verificação com prostração, dificuldade respiratória, hipertermia ou óbito gera orientação de perigo. Se o agente escolher a soltura em ocorrência de apreensão, cativeiro ou suspeita de crime, a aplicação exibe um aviso e passa a apontar como pendência a falta de justificativa. O catálogo de contatos recebeu a indicação de atendimento 24 horas, sugerida nas anotações de revisão do manuscrito do protocolo e usada como critério de desempate na sugestão de instituições, e o guia recebeu a tela "Protocolo de atuação", que reúne o checklist, os EPI, os critérios de transporte e os itens de registro para consulta sem conexão (Figura 5c).</p>
+
+<figure>
+<p class="legenda"><b>Figura 5</b> – Checklist operacional na etapa de manejo (a), verificações durante o transporte (b) e protocolo de atuação no guia (c)</p>
+<div class="telas">
+  <div><img src="../figuras/tela-checklist.jpg" alt="Bloco de avaliação inicial do checklist operacional, com três de cinco itens marcados"><span>(a)</span></div>
+  <div><img src="../figuras/tela-transporte.jpg" alt="Lista de verificações feitas durante o transporte e checklist de destinação"><span>(b)</span></div>
+  <div><img src="../figuras/tela-protocolo.jpg" alt="Tela de consulta ao protocolo de atuação no guia"><span>(c)</span></div>
+</div>
+<p class="fonte">Fonte: elaborado pelos autores (2026), com dados fictícios.</p>
+</figure>
+
+<p>Após testarem a aplicação, a coorientação e a equipe do CETRAS/UNICENTRO solicitaram dois registros (RF14): a identificação de quem recebe os animais (nome, função, registro na instituição e CRMV ou documento) e a cronologia do atendimento. O histórico passou a registrar o início e a conclusão de cada etapa, as pausas (saída da ocorrência, aplicativo em segundo plano ou fechado) e as retomadas; a revisão e o relatório mostram os horários e o tempo de cada etapa, sem as pausas, e a duração total.</p>
+
+<h3>5.5 Cadastro de animais e lotes</h3>
+<p>Atendendo ao requisito RF05, uma ocorrência pode reunir registros de animais individuais e de lotes. Uma apreensão de 30 aves, por exemplo, pode ser registrada como um único lote, com a indicação das espécies e das quantidades, sem a necessidade de uma ficha por animal; somente os indivíduos que exigem atenção, como feridos, filhotes ou anilhados, são destacados dentro do lote. Para cada registro, informam-se o grupo animal, o estado (vivo ou morto), a situação em que foi encontrado, a condição geral, o comportamento observado e os riscos no manejo (Figura 6a). As espécies podem ser escolhidas no guia, buscadas na base on-line ou registradas como "espécie não identificada", e toda identificação permanece marcada como provisória até ser confirmada pelo agente. Ao escolher o grupo, a tela exibe as orientações de manejo do grupo e os cuidados específicos das espécies informadas.</p>
+
+<h3>5.6 Registro fotográfico</h3>
+<p>As fotografias podem ser tiradas pela câmera ou escolhidas na galeria e são vinculadas a uma identificação livre (por exemplo, "Animal 1", "Lote de aves 1" ou "Gaiola 1") e a um momento da ocorrência: local, animal ou lote, vestígio, após a contenção ou entrega. No momento da gravação, a aplicação registra data, hora, autor, número da ocorrência e localização, quando autorizada; lê os metadados Exif do arquivo (data original, fabricante e modelo da câmera, resolução e coordenadas); e calcula o resumo SHA-256 do arquivo original. Se o aparelho não fornecer a localização, as coordenadas gravadas na própria foto são utilizadas, com a indicação da origem.</p>
+<p>Após a gravação, a aplicação lê novamente o registro no IndexedDB para confirmar que a imagem foi salva e só então exibe a tela de confirmação (Figura 6b), com as opções de recortar, editar os dados ou excluir. O recorte gera uma cópia, usada na exibição e no relatório, e o arquivo original permanece inalterado. A exclusão é lógica: a foto deixa de ser exibida, mas permanece marcada como excluída, com data e motivo informados pelo usuário, no histórico e no relatório. Essas decisões atendem às recomendações do questionário de requisitos de preservar a fotografia original, não permitir a substituição silenciosa e manter o histórico de inclusões, exclusões e alterações.</p>
+
+<figure>
+<p class="legenda"><b>Figura 6</b> – Cadastro de espécies de um lote (a), confirmação de fotografia salva (b) e orientações com justificativa na revisão (c)</p>
+<div class="telas">
+  <div><img src="../figuras/tela-lote.jpg" alt="Cadastro de espécies e quantidades de um lote"><span>(a)</span></div>
+  <div><img src="../figuras/tela-foto.jpg" alt="Tela de foto salva com opções de recortar, editar e excluir"><span>(b)</span></div>
+  <div><img src="../figuras/tela-revisao.jpg" alt="Orientações apresentadas com justificativa"><span>(c)</span></div>
+</div>
+<p class="fonte">Fonte: elaborado pelos autores (2026), com dados fictícios e imagem de teste.</p>
+</figure>
+
+<h3>5.7 Guia de fauna e contatos</h3>
+<p>O guia contém 29 espécies de ocorrência no Paraná e na Região Sul, sendo 9 mamíferos, 7 aves, 7 répteis, 2 anfíbios e 4 invertebrados, além de orientações gerais para seis grupos, incluindo o grupo "não identificado", que recebe a conduta mais cautelosa. Cada ficha apresenta porte, características de reconhecimento, classificação de risco e cuidados no manejo (Figura 7a). Os critérios de identificação e as condutas para animais peçonhentos foram conferidos com o Guia de Animais Peçonhentos do Brasil (Brasil, 2024); durante essa conferência, três informações de duas fichas da versão inicial foram corrigidas.</p>
+
+
+<p>Quando há conexão, a ficha é complementada por dados da API do iNaturalist: fotografias de referência com a autoria indicada, resumo descritivo, classificação, estado de conservação e número de registros. A aplicação também consulta as espécies registradas em um raio de 50 km da localização do usuário, para apoiar a comparação durante a identificação. As respostas da API são armazenadas no aparelho, apenas com os campos usados pela aplicação, com prazos de validade de 3 a 30 dias, conforme o tipo de consulta, e podem ser baixadas previamente para uso em campo. A documentação da API limita o uso a 100 requisições por minuto e solicita que se mantenha abaixo de 60 por minuto e de 10.000 por dia; informa ainda que as fotografias servidas pelo domínio <i>static.inaturalist.org</i> não possuem licença aberta (iNaturalist, [2026]). Por isso, as imagens são exibidas apenas como referência visual, com o crédito do autor.</p>
+<p>Para facilitar o reconhecimento, cada espécie da lista do guia e da janela de cadastro de espécies exibe uma fotografia de referência, e a ficha da espécie mostra a mesma fotografia em tamanho maior. Para reduzir o consumo de dados, os códigos dos 29 táxons no iNaturalist foram gravados no catálogo, e as fotografias de todas as espécies são obtidas em uma única consulta, de cerca de 35 kB, guardada por 30 dias; consultar cada espécie separadamente exigiria 58 requisições. Sem conexão e sem a imagem no cache, a lista mostra o ícone do grupo.</p>
+<p>O catálogo de contatos reúne números de emergência, órgãos ambientais e de saúde e instituições de destinação, com destaque para o CETRAS/UNICENTRO, e permite que o usuário inclua e edite instituições da sua região (Figura 7b). Cada contato exibe o logotipo do órgão; o CETRAS usa o da UNICENTRO. Na etapa de encaminhamento, as instituições são ordenadas pelos grupos animais que recebem e, quando a localização está disponível, pela distância.</p>
+
+<figure>
+<p class="legenda"><b>Figura 7</b> – Ficha de espécie do guia (a), catálogo de contatos (b) e tela inicial no tema claro (c)</p>
+<div class="telas">
+  <div><img src="../figuras/tela-especie.jpg" alt="Ficha da jararaca no guia de fauna"><span>(a)</span></div>
+  <div><img src="../figuras/tela-contatos.jpg" alt="Catálogo de contatos com destaque para o CETRAS/UNICENTRO"><span>(b)</span></div>
+  <div><img src="../figuras/tela-inicio-claro.jpg" alt="Tela inicial no tema claro"><span>(c)</span></div>
+</div>
+<p class="fonte">Fonte: elaborado pelos autores (2026), com dados fictícios; as fotografias de terceiros fornecidas pela API do iNaturalist foram omitidas na captura.</p>
+</figure>
+
+<h3>5.8 Relatório em PDF</h3>
+<p>Ao encerrar a ocorrência, a aplicação gera no próprio aparelho, com as bibliotecas jsPDF e jsPDF-AutoTable, uma ficha auxiliar em PDF com onze seções: identificação, com a duração do atendimento; local e contexto; respostas das duas etapas de perguntas; animais e lotes; orientações apresentadas, com as justificativas; manejo e procedimentos, com os seis blocos do checklist operacional; encaminhamento e destino, com as verificações feitas no transporte; fotografias com legenda, metadados e resumo SHA-256; observações e itens não informados; horários das etapas e histórico de registros; e campos de assinatura do responsável pelo registro e de quem recebeu os animais, com função e CRMV ou documento (Figura 8). O rodapé de cada página declara o caráter auxiliar do documento. O arquivo pode ser baixado ou compartilhado pelos recursos do sistema operacional, e a decisão de compartilhá-lo cabe ao usuário, como definido no requisito RF10.</p>
+
+<figure>
+<p class="legenda"><b>Figura 8</b> – Primeira e terceira páginas de um relatório gerado pela aplicação</p>
+<div class="relatorio-img">
+  <img src="../figuras/relatorio-p1.png" alt="Primeira página do relatório em PDF">
+  <img src="../figuras/relatorio-p3.png" alt="Terceira página do relatório em PDF, com encaminhamento e fotografia">
+</div>
+<p class="fonte">Fonte: elaborado pelos autores (2026), com dados fictícios e imagem de teste.</p>
+</figure>
+
+<h3>5.9 Interface e acessibilidade</h3>
+<p>A interface utiliza superfícies com 93% de opacidade sobre uma fotografia de floresta escurecida. Uma versão anterior aplicava desfoque de fundo, um filtro de refração gerado em SVG e um reflexo de luz que acompanhava a inclinação do aparelho; no uso em celular, esses efeitos tornaram a troca de telas lenta e foram removidos (Seção 6.2). Para preservar a legibilidade, foram adotadas as seguintes medidas: tema claro para uso sob luz solar (Figura 7c); modo de alto contraste, que remove as transparências; três tamanhos de texto; e alvos de toque de 44 a 56 pixels CSS. A navegação também foi adaptada a leitores de tela e teclado: o foco é levado ao título a cada troca de tela, os grupos de opções são associados a seus rótulos e, enquanto uma janela está aberta, o foco permanece nela e volta ao elemento de origem quando ela é fechada.</p>
+
+<h3>5.10 Versão para Android</h3>
+<p>Para a instalação em celulares sem depender de um servidor, a aplicação também foi empacotada como aplicativo Android (APK de 2,9 MB). O invólucro nativo, escrito em Java, exibe o mesmo código HTML, CSS e JavaScript em um componente WebView, copiado para o pacote no momento da compilação. Os arquivos são servidos pela classe WebViewAssetLoader em um endereço HTTPS local, recomendação da documentação do Android para que o conteúdo do aplicativo tenha acesso às APIs da web, em vez de endereços <i>file://</i> (Android Developers, [2026]); assim, <i>localStorage</i>, IndexedDB, Service Worker e Web Cryptography funcionam como no navegador. O invólucro trata o que o WebView não faz sozinho: a abertura da câmera e da galeria, a permissão de localização, a informação de que a conexão caiu ou voltou, a passagem para segundo plano, usada no registro de pausas, o botão Voltar e, por meio de uma ponte acessada pelo JavaScript, a gravação do relatório e da cópia de segurança na pasta de downloads, o compartilhamento e a impressão. O aplicativo ocupa a tela inteira, com as barras do sistema ocultas, e permanece na posição vertical mesmo com o aparelho girado; instalada pelo navegador, a aplicação solicita o mesmo comportamento por meio do manifesto e, aberta em uma aba comum, pede que o celular seja colocado na vertical.</p>
+
+<!-- ===================== 6 RESULTADOS ===================== -->
+<h2>6 Resultados e discussão</h2>
+<p>Esta seção apresenta os resultados das verificações automatizadas e discute as limitações identificadas.</p>
+
+<h3>6.1 Verificações funcionais</h3>
+<p>O Quadro 4 resume os conjuntos de testes automatizados executados na versão final e seus resultados. Todos os conjuntos foram executados sem erros de JavaScript registrados no console, exceto o erro de falta de espaço provocado intencionalmente no teste de integridade.</p>
+
+<div class="bloco-quadro">
+<p class="legenda"><b>Quadro 4</b> – Testes automatizados executados e resultados</p>
+<table class="quadro">
+<thead><tr><th style="width:24%">Conjunto</th><th style="width:52%">O que foi verificado</th><th style="width:24%">Resultado</th></tr></thead>
+<tbody>
+<tr><td>Fluxo completo</td><td>Criação de perfil, oito etapas, respostas condicionais, cadastro de lote, encaminhamento, encerramento e relatório</td><td>Aprovado</td></tr>
+<tr><td>Integridade e persistência</td><td>Gravação de texto ao trocar de tela antes do intervalo de gravação; manutenção de respostas, lotes, etapa e fotos após recarregar; falha simulada por falta de espaço, com indicação de erro e recuperação; foco preso em janelas e retorno ao elemento de origem; rótulos acessíveis; título da página por tela</td><td>22 de 22 verificações aprovadas no Chrome e no Edge</td></tr>
+<tr><td>Protocolo operacional e correções</td><td>Pergunta condicional sobre as condições dos animais; regras novas; respostas de perguntas ocultas desconsideradas; checklist por etapa; aviso e pendência de soltura; verificações do transporte; novas seções do relatório em HTML e PDF; ocorrência gravada pela versão anterior; transação do IndexedDB cancelada; contatos 24 horas; telas de consulta</td><td>38 de 38 verificações aprovadas no Chrome e no Edge</td></tr>
+<tr><td>Versão otimizada</td><td>Ausência de desfoque, filtros e animações contínuas em sete telas; bibliotecas de PDF carregadas sob demanda; miniaturas de fotos, inclusive sem <i>createImageBitmap</i>; formulário sem <i>Object.fromEntries</i>; fotos do guia e retorno ao ícone sem a imagem</td><td>16 de 16 verificações aprovadas no Chrome e no Edge</td></tr>
+<tr><td>Android (emulador, Android 17)</td><td>Instalação do APK; perfil, etapas e telas sem erro; regras; foto pela câmera do sistema e no IndexedDB, com SHA-256; GPS; Service Worker; PDF e cópia de segurança na pasta de downloads; modo avião, com aviso e PDF</td><td>13 de 13 verificações aprovadas; câmera, rotação travada, tela cheia e teclado verificados manualmente</td></tr>
+<tr><td>Horários e recebimento</td><td>Etapas, pausas e retomadas (saída, segundo plano, fechamento); dados de quem recebeu; revisão, HTML e PDF</td><td>21 de 21 aprovadas no Edge; pausa conferida no emulador</td></tr>
+<tr><td>Firefox</td><td>Perfil, oito etapas e demais telas sem erro; regras; foto no IndexedDB com conferência do SHA-256; transação cancelada; PDF; funcionamento sem conexão pelo Service Worker</td><td>10 de 10 verificações aprovadas</td></tr>
+<tr><td>Fotografias</td><td>Envio de arquivo de 6,7 MB pelo botão de câmera, confirmação, recorte, exclusão com motivo e conferência do SHA-256 do original</td><td>Aprovado; resumo do original inalterado após o recorte</td></tr>
+<tr><td>Metadados Exif</td><td>Leitura de arquivo JPEG de teste com fabricante, modelo, data original e coordenadas</td><td>Todos os campos lidos corretamente</td></tr>
+<tr><td>Guia on-line</td><td>Busca de espécie, ficha com dados da API e lista de espécies da região</td><td>Aprovado (requer conexão)</td></tr>
+<tr><td>Relatório PDF</td><td>Geração com e sem conexão; fonte incorporada; texto extraível</td><td>Aprovado; cerca de 90 kB com uma foto</td></tr>
+</tbody>
+</table>
+<p class="fonte">Fonte: elaborado pelos autores (2026).</p>
+</div>
+
+<p>Os testes também identificaram falhas que foram corrigidas durante o desenvolvimento. A revisão do código mostrou que o texto digitado poderia ser perdido se o usuário trocasse de tela antes do intervalo de 400 ms usado para agrupar gravações; o salvamento passou a ser concluído na troca de tela e quando o aplicativo é minimizado. Durante o uso, também se verificou que o envio de fotografias não exibia retorno ao usuário. A análise indicou que, em alguns navegadores de celular, o campo de seleção de arquivo criado fora da página pode não notificar a aplicação; o campo passou a ser inserido na página, e a confirmação passou a ser exibida somente após a releitura da imagem gravada.</p>
+<p>A revisão do código feita após a incorporação do protocolo identificou e corrigiu outras cinco falhas: (1) respostas de perguntas que deixavam de ser exibidas continuavam a gerar orientações, como a recomendação de aguardar apoio mesmo depois de alterada a resposta sobre o risco; (2) a gravação no IndexedDB tratava apenas o evento de erro da transação, e uma transação cancelada pelo navegador, como ocorre por falta de espaço, deixava a operação pendente indefinidamente; (3) o Service Worker armazenava também respostas de erro do servidor, que poderiam substituir a cópia válida usada sem conexão; (4) na largura de 320 pixels, o nome da espécie no cadastro de lotes ficava com 30 pixels de largura, quebrado a cada sílaba; e (5) a lista de pendências da revisão usava o nome de um ícone inexistente.</p>
+
+<h3>6.2 Leiaute, contraste e desempenho</h3>
+<p>A auditoria de leiaute percorreu 23 telas em 12 dimensões de celulares, de 280×653 pixels CSS (tela externa de aparelhos dobráveis) a 480×1000, cada uma com os três tamanhos de texto, totalizando 828 combinações, além da tela de boas-vindas e de três janelas sobrepostas. Foram identificados e corrigidos: rótulos da barra de navegação cortados abaixo de 360 pixels, que passaram a ser exibidos apenas no item atual, com os demais representados por ícones e nomeados para leitores de tela; botões do rodapé das etapas e marcadores de perguntas que ultrapassavam a largura de 280 pixels; títulos quebrados no meio da palavra; e nomes de espécies comprimidos por etiquetas. Após as correções, nenhuma combinação apresentou rolagem horizontal, conteúdo fora da tela ou erro de JavaScript. Permanecem abaixo de 44 pixels apenas os marcadores de navegação entre perguntas, com 44 pixels de altura e de 32 a 43 pixels de largura, acima do mínimo de 24 pixels do critério 2.5.8 da WCAG 2.2 (W3C, 2023).</p>
+<p>As razões de contraste foram calculadas pela fórmula da WCAG 2.2, considerando a área mais clara da fotografia de fundo sob o véu escuro e a opacidade das superfícies. A Tabela 1 apresenta os valores obtidos; todos os pares atingem a razão mínima de 4,5:1 do nível AA. Como a fotografia varia ao longo da tela, os valores são uma estimativa para o pior caso, e não uma medição de cada pixel. Eles foram calculados com a opacidade das superfícies da versão com vidro líquido; as superfícies mais opacas da versão final produzem razões iguais ou maiores.</p>
+
+<div class="bloco-quadro">
+<p class="legenda"><b>Tabela 1</b> – Razões de contraste estimadas para os principais pares de cores</p>
+<table class="tabela">
+<thead><tr><th>Par de cores</th><th>Tema</th><th class="num">Razão</th></tr></thead>
+<tbody>
+<tr><td>Texto principal sobre superfície de vidro</td><td>Escuro</td><td class="num">14,9:1</td></tr>
+<tr><td>Texto secundário sobre superfície de vidro</td><td>Escuro</td><td class="num">10,2:1</td></tr>
+<tr><td>Texto terciário sobre superfície de vidro</td><td>Escuro</td><td class="num">6,7:1</td></tr>
+<tr><td>Cor de destaque (menta) sobre superfície de vidro</td><td>Escuro</td><td class="num">8,6:1</td></tr>
+<tr><td>Texto sobre botão principal</td><td>Escuro</td><td class="num">10,7:1</td></tr>
+<tr><td>Texto branco sobre botão de perigo</td><td>Escuro</td><td class="num">4,8:1</td></tr>
+<tr><td>Cor de alerta sobre superfície de vidro</td><td>Escuro</td><td class="num">9,5:1</td></tr>
+<tr><td>Cor de perigo sobre superfície de vidro</td><td>Escuro</td><td class="num">5,1:1</td></tr>
+<tr><td>Texto principal sobre superfície de vidro</td><td>Claro</td><td class="num">16,2:1</td></tr>
+<tr><td>Texto secundário sobre superfície de vidro</td><td>Claro</td><td class="num">9,2:1</td></tr>
+<tr><td>Texto terciário sobre superfície de vidro</td><td>Claro</td><td class="num">5,0:1</td></tr>
+<tr><td>Cor de destaque sobre superfície de vidro</td><td>Claro</td><td class="num">6,7:1</td></tr>
+<tr><td>Cor de alerta sobre superfície de vidro</td><td>Claro</td><td class="num">4,6:1</td></tr>
+<tr><td>Cor de perigo sobre superfície de vidro</td><td>Claro</td><td class="num">5,6:1</td></tr>
+</tbody>
+</table>
+<p class="fonte" style="text-align:left">Fonte: elaborado pelos autores (2026).</p>
+</div>
+
+<p>Quanto ao desempenho, o uso da primeira versão em celular mostrou trocas de tela lentas. No emulador Android sem aceleração gráfica, condição próxima à de um aparelho de baixo desempenho, as telas ficavam de 3 a 6 s sem conteúdo após cada troca enquanto o desfoque de fundo, o filtro de refração e o reflexo de luz estavam ativos. Esses efeitos e as manchas animadas do fundo foram removidos; o fundo e o logotipo foram reduzidos de 450 kB para 134 kB e de 834 kB para 231 kB; as bibliotecas de PDF, de 405 kB, passaram a ser carregadas apenas na geração do primeiro relatório; e as grades de fotografias passaram a usar miniaturas de até 320 pixels, geradas ao salvar a foto, em vez de decodificar o arquivo original. Na mesma condição, as telas passaram a aparecer já na primeira captura de tela após a troca, feita cerca de 1 s depois. Também foram substituídos recursos ausentes em navegadores antigos, como <i>Object.fromEntries</i>, <i>flatMap</i> e as propriedades CSS <i>inset</i> e <i>aspect-ratio</i>.</p>
+
+<h3>6.3 Discussão e limitações</h3>
+<p>Os resultados indicam que os requisitos do Quadro 2 foram implementados e que o funcionamento sem conexão, a persistência dos dados e a geração do relatório se comportaram como esperado no ambiente testado. A organização em etapas, com uma pergunta por vez e uma tela de revisão, seguiu a preferência registrada no questionário de requisitos, e a justificativa associada a cada orientação permite ao agente e a quem lê o relatório conferir por que uma conduta foi recomendada.</p>
+<p>O trabalho apresenta limitações que devem ser consideradas na interpretação dos resultados. Primeiro, os testes foram executados em computador, com emulação de dispositivos, no Chrome e no Edge, que usam o mesmo motor de renderização, e no Firefox, com um conjunto reduzido de verificações; além do uso preliminar em celular relatado pelo autor, não houve testes sistemáticos em aparelhos físicos nem no Safari (iOS). Segundo, o APK foi verificado apenas no emulador do Android 17; o funcionamento a partir do Android 7.0 depende da versão do WebView instalada em cada aparelho e não foi verificado em dispositivo. Terceiro, o Safari pode remover os dados de origens sem interação recente (MDN Web Docs, 2026d), e o <i>localStorage</i> é limitado a 5 MiB por origem; por isso, a exportação periódica de cópias de segurança permanece necessária, e a cópia atual não inclui as fotografias. Quarto, o PIN controla apenas o acesso à interface: os dados não são criptografados no aparelho. Quinto, parte das orientações deriva das respostas do questionário de requisitos e não de documento oficial (Quadro 3), e algumas informações do guia, como a distância mínima de 2 metros de animais peçonhentos, não foram localizadas nas fontes consultadas; esse conteúdo depende da validação prevista com o CETRAS/UNICENTRO. Além disso, o protocolo de Dallabrida <i>et al.</i> (2026) ainda está em elaboração, e alterações em sua versão final devem ser refletidas no checklist e nas regras. Por fim, a fonte tipográfica usada na interface e no relatório é de uso comercial, e sua licença deve ser verificada antes da distribuição pública da aplicação.</p>
+<p>Ressalta-se que o SISTRAFA é uma ferramenta individual e auxiliar: ele não substitui boletins de ocorrência, documentos oficiais, protocolos institucionais nem os procedimentos formais de cadeia de custódia, e o código SHA-256 permite apenas verificar se uma imagem foi alterada depois de registrada.</p>
+
+<!-- ===================== 7 CONSIDERAÇÕES FINAIS ===================== -->
+<h2>7 Considerações finais</h2>
+<p>Este artigo apresentou o SISTRAFA, aplicação web progressiva desenvolvida no estágio-pesquisa para apoiar policiais e bombeiros no atendimento a ocorrências com fauna silvestre. Os objetivos específicos do plano de estágio foram atendidos: a aplicação utiliza Service Worker, <i>localStorage</i> e IndexedDB para funcionar sem conexão; conduz a triagem por perguntas condicionais, por um checklist operacional baseado em protocolo de atuação policial e por um motor de 22 regras com orientações justificadas; permite o cadastro de animais individuais e em lotes, com fotografias vinculadas; extrai metadados Exif e registra o resumo SHA-256 das imagens; gera relatórios em PDF no aparelho; e reúne um guia de 29 espécies e um catálogo de contatos com destaque para o CETRAS/UNICENTRO.</p>
+<p>Do ponto de vista técnico, o projeto mostrou que as tecnologias da web disponíveis nos navegadores atuais permitem construir uma ferramenta de campo sem servidor de dados, desde que as limitações de armazenamento e as diferenças entre navegadores sejam tratadas no projeto. A verificação de cada informação de conteúdo com documentos oficiais também se mostrou necessária: a conferência com o guia do Ministério da Saúde levou à correção de três informações em duas fichas de espécies, e a revisão normativa identificou que uma das instruções normativas previstas inicialmente como referência havia sido revogada. Da mesma forma, a comparação com o protocolo operacional elaborado com participação da coorientação levou à inclusão do checklist por etapa, do registro das condições dos animais e do acompanhamento do transporte, o que reforça a importância de envolver especialistas do domínio na definição do conteúdo.</p>
+<p>Como trabalhos futuros, propõem-se: (1) a validação do conteúdo de manejo e das regras de orientação com os profissionais do CETRAS/UNICENTRO; (2) testes em aparelhos físicos, no navegador Safari e em condições de campo, sob luz solar e com uso de luvas; (3) testes de usabilidade com policiais e bombeiros, com aplicação de questionário padronizado; (4) a inclusão das fotografias na cópia de segurança e a criptografia dos dados no aparelho; e (5) a ampliação do guia de espécies e do catálogo de instituições para outras regiões do Paraná.</p>
+
+<!-- ===================== REFERÊNCIAS ===================== -->
+<h2 class="sem-numero">Referências</h2>
+<div class="referencias">
+<p>ANDROID DEVELOPERS. <b>Load in-app content</b>. [<i>S. l.</i>]: Google, [2026]. Disponível em: https://developer.android.com/develop/ui/views/layout/webapps/load-local-content. Acesso em: 19 out. 2026.</p>
+<p>ANTHROPIC. <b>Claude Code</b>. San Francisco: Anthropic, [2026]. Ferramenta de programação assistida por inteligência artificial. Disponível em: https://claude.com/product/claude-code. Acesso em: 17 out. 2026.</p>
+<p>BENGTSSON, S. <b>jsPDF-AutoTable</b>. Versão 3.8.4. [<i>S. l.</i>]: GitHub, 2024. Biblioteca JavaScript. Disponível em: https://github.com/simonbengtsson/jsPDF-AutoTable. Acesso em: 12 out. 2026.</p>
+<p>BIØRN-HANSEN, A.; MAJCHRZAK, T. A.; GRØNLI, T.-M. Progressive web apps: the possible web-native unifier for mobile development. <i>In</i>: INTERNATIONAL CONFERENCE ON WEB INFORMATION SYSTEMS AND TECHNOLOGIES, 13., 2017, Porto. <b>Proceedings</b> [...]. Setúbal: SciTePress, 2017. v. 2, p. 344-351. DOI: https://doi.org/10.5220/0006353703440351.</p>
+<p>BRASIL. Decreto nº 6.514, de 22 de julho de 2008. Dispõe sobre as infrações e sanções administrativas ao meio ambiente, estabelece o processo administrativo federal para apuração destas infrações, e dá outras providências. <b>Diário Oficial da União</b>: seção 1, Brasília, DF, 23 jul. 2008. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2008/decreto/d6514.htm. Acesso em: 12 out. 2026.</p>
+<p>BRASIL. Lei nº 9.605, de 12 de fevereiro de 1998. Dispõe sobre as sanções penais e administrativas derivadas de condutas e atividades lesivas ao meio ambiente, e dá outras providências. <b>Diário Oficial da União</b>: seção 1, Brasília, DF, 13 fev. 1998. Disponível em: https://www.planalto.gov.br/ccivil_03/leis/l9605.htm. Acesso em: 12 out. 2026.</p>
+<p>BRASIL. Ministério da Saúde. <b>Raiva</b>. Brasília, DF: Ministério da Saúde, [2026]. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/r/raiva. Acesso em: 12 out. 2026.</p>
+<p>BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde. Departamento de Vigilância das Doenças Transmissíveis. <b>Guia de vigilância de epizootias em primatas não humanos e entomologia aplicada à vigilância da febre amarela</b>. 2. ed. Brasília, DF: Ministério da Saúde, 2014. Disponível em: https://bvsms.saude.gov.br/bvs/publicacoes/guia_vigilancia_epizootias_primatas_entomologia.pdf. Acesso em: 12 out. 2026.</p>
+<p>BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde e Ambiente. Departamento de Doenças Transmissíveis. <b>Guia de animais peçonhentos do Brasil</b>. Brasília, DF: Ministério da Saúde, 2024. Disponível em: https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/animais-peconhentos/publicacoes/guia-animais-peconhentos-do-brasil.pdf. Acesso em: 12 out. 2026.</p>
+<p>CAMERA &amp; IMAGING PRODUCTS ASSOCIATION. <b>CIPA DC-008-Translation-2026</b>: exchangeable image file format for digital still cameras: Exif version 3.1. Tóquio: CIPA, 2026. Disponível em: https://www.cipa.jp/e/std/std-sec.html. Acesso em: 17 out. 2026.</p>
+<p>CHAME, M. <i>et al.</i> SISS-Geo: leveraging citizen science to monitor wildlife health risks in Brazil. <b>Journal of Healthcare Informatics Research</b>, [<i>s. l.</i>], v. 3, n. 4, p. 414-440, 2019. DOI: https://doi.org/10.1007/s41666-019-00055-2.</p>
+<p>DALLABRIDA, V. E.; ZARPELON, F. A.; PERES, J. A.; DALMAZ, C. D.; SOUZA, R. A. M. <b>Protocolo operacional para atuação policial em apreensões de fauna vitimada</b>. Guarapuava: UNICENTRO, 2026. Manuscrito em elaboração.</p>
+<p>FUNDAÇÃO NACIONAL DE SAÚDE (Brasil). <b>Manual de diagnóstico e tratamento de acidentes por animais peçonhentos</b>. 2. ed. rev. Brasília, DF: FUNASA, 2001. Disponível em: https://portaldeboaspraticas.iff.fiocruz.br/wp-content/uploads/2025/03/Manual-de-diagnostico-e-tratamento-de-acidentes-por-animais-peconhentos.pdf. Acesso em: 12 out. 2026.</p>
+<p>GOIÁS. Corpo de Bombeiros Militar. <b>Manual de salvamento terrestre</b>. Goiânia: CBMGO, [2014?]. (Coletânea de manuais técnicos de bombeiros). Disponível em: https://www.bombeiros.go.gov.br/wp-content/uploads/2014/10/mtb-03-salv-terr.pdf. Acesso em: 12 out. 2026.</p>
+<p>GOOGLE. <b>Chrome DevTools Protocol</b>. [<i>S. l.</i>]: Google, [2026]. Disponível em: https://chromedevtools.github.io/devtools-protocol/. Acesso em: 17 out. 2026.</p>
+<p>IBAMA. Instrução Normativa nº 5, de 13 de maio de 2021. Dispõe sobre as diretrizes, prazos e os procedimentos para a operacionalização dos Centros de Triagem de Animais Silvestres (Cetas) do Ibama, bem como para a destinação de animais silvestres apreendidos, resgatados ou entregues espontaneamente a esses centros. <b>Diário Oficial da União</b>: seção 1, Brasília, DF, ed. 98, p. 187, 26 maio 2021. Disponível em: https://www.in.gov.br/en/web/dou/-/instrucao-normativa-n-5-de-13-de-maio-de-2021-322106813. Acesso em: 12 out. 2026.</p>
+<p>INATURALIST. <b>iNaturalist API</b>: version 1.3.0. [<i>S. l.</i>]: iNaturalist, [2026]. Disponível em: https://api.inaturalist.org/v1/docs/. Acesso em: 12 out. 2026.</p>
+<p>LIMA, Â. L. T. B. de <i>et al.</i> Aplicativo para orientação de vítimas de acidentes com animais peçonhentos. <i>In</i>: ESCOLA REGIONAL DE COMPUTAÇÃO APLICADA À SAÚDE (ERCAS), 8., 2021, São Paulo. <b>Anais</b> [...]. Porto Alegre: Sociedade Brasileira de Computação, 2021. p. 104-105. DOI: https://doi.org/10.5753/ercas.2021.17453.</p>
+<p>MAJCHRZAK, T. A.; BIØRN-HANSEN, A.; GRØNLI, T.-M. Progressive web apps: the definite approach to cross-platform development? <i>In</i>: HAWAII INTERNATIONAL CONFERENCE ON SYSTEM SCIENCES, 51., 2018, Waikoloa Village. <b>Proceedings</b> [...]. Honolulu: University of Hawaiʻi at Mānoa, 2018. DOI: https://doi.org/10.24251/HICSS.2018.718.</p>
+<p>MDN WEB DOCS. <b>IndexedDB</b>. [<i>S. l.</i>]: Mozilla, 2026a. Disponível em: https://developer.mozilla.org/pt-BR/docs/Web/API/IndexedDB_API. Acesso em: 17 out. 2026.</p>
+<p>MDN WEB DOCS. <b>Progressive web apps</b>. [<i>S. l.</i>]: Mozilla, 2026b. Disponível em: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps. Acesso em: 17 out. 2026.</p>
+<p>MDN WEB DOCS. <b>Service Worker API</b>. [<i>S. l.</i>]: Mozilla, 2026c. Disponível em: https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API. Acesso em: 17 out. 2026.</p>
+<p>MDN WEB DOCS. <b>Storage quotas and eviction criteria</b>. [<i>S. l.</i>]: Mozilla, 2026d. Disponível em: https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria. Acesso em: 17 out. 2026.</p>
+<p>MDN WEB DOCS. <b>Web Storage API</b>. [<i>S. l.</i>]: Mozilla, 2026e. Disponível em: https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API. Acesso em: 17 out. 2026.</p>
+<p>NATIONAL INSTITUTE OF STANDARDS AND TECHNOLOGY (Estados Unidos). <b>Secure Hash Standard (SHS)</b>. Gaithersburg: NIST, 2015. (FIPS PUB 180-4). DOI: https://doi.org/10.6028/NIST.FIPS.180-4.</p>
+<p>OLIVEIRA, T. de. Cetras da Unicentro socorre mais de 570 animais silvestres em Guarapuava. <b>Rede Sul de Notícias</b>, Guarapuava, 19 fev. 2026. Disponível em: https://redesuldenoticias.com.br/noticias/cetras-da-unicentro-socorre-mais-de-570-animais-silvestres-em-guarapuava/. Acesso em: 17 out. 2026.</p>
+<p>OPENAI. <b>ChatGPT</b>. San Francisco: OpenAI, 2026. Ferramenta de inteligência artificial com geração de imagens. Disponível em: https://chatgpt.com. Acesso em: 5 out. 2026.</p>
+<p>PARALLAX. <b>jsPDF</b>: client-side JavaScript PDF generation for everyone. [<i>S. l.</i>]: GitHub, 2026. Disponível em: https://github.com/parallax/jsPDF. Acesso em: 12 out. 2026.</p>
+<p>PARANÁ. Instituto Água e Terra. <b>Lista de espécies exóticas invasoras do Paraná</b>. Curitiba: IAT, [2020?]. Folheto. Disponível em: https://www.iat.pr.gov.br/sites/agua-terra/arquivos_restritos/files/documento/2020-04/folder_web_geral.pdf. Acesso em: 12 out. 2026.</p>
+<p>W3C. <b>Web Content Accessibility Guidelines (WCAG) 2.2</b>. [<i>S. l.</i>]: W3C, 5 out. 2023. W3C Recommendation. Disponível em: https://www.w3.org/TR/WCAG22/. Acesso em: 12 out. 2026.</p>
+<p>W3C. <b>Web Cryptography Level 2</b>. [<i>S. l.</i>]: W3C, 22 abr. 2025. W3C First Public Working Draft. Disponível em: https://www.w3.org/TR/WebCryptoAPI/. Acesso em: 17 out. 2026.</p>
+<p>W3C. <b>Service Workers</b>. [<i>S. l.</i>]: W3C, 12 ago. 2026a. W3C Candidate Recommendation Draft. Disponível em: https://www.w3.org/TR/2026/CRD-service-workers-20260812/. Acesso em: 12 out. 2026.</p>
+<p>W3C. <b>Web Application Manifest</b>. [<i>S. l.</i>]: W3C, 16 out. 2026b. W3C Working Draft. Disponível em: https://www.w3.org/TR/appmanifest/. Acesso em: 17 out. 2026.</p>
+<p>W3C. <b>WebDriver BiDi</b>. [<i>S. l.</i>]: W3C, 8 out. 2026c. W3C Working Draft. Disponível em: https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/. Acesso em: 18 out. 2026.</p>
+</div>
+
+<!-- ===================== APÊNDICE ===================== -->
+<div class="apendice">
+<h2 class="sem-numero">Apêndice A – Estrutura do questionário de requisitos</h2>
+<div class="bloco-quadro">
+<p class="legenda"><b>Quadro A.1</b> – Seções do questionário de compreensão do aplicativo e principais definições obtidas</p>
+<table class="quadro">
+<thead><tr><th style="width:30%">Seção do questionário</th><th style="width:70%">Principais definições obtidas</th></tr></thead>
+<tbody>
+<tr><td>1 A ideia do aplicativo</td><td>Ferramenta auxiliar de consulta e organização para forças de segurança e defesa civil, sem substituir protocolos e sistemas oficiais; registro de ocorrências com vários animais, guia de espécies, contatos e relatório</td></tr>
+<tr><td>2 Quem vai usar</td><td>Policiais e bombeiros, com as mesmas funções; perfil local no aparelho, sem conta on-line; acesso protegido por PIN opcional</td></tr>
+<tr><td>3 A ocorrência no aplicativo</td><td>Tela inicial com quatro opções e acesso rápido a situações de risco; numeração e registro automáticos; cadastro por grupos e lotes; perguntas condicionais com orientações</td></tr>
+<tr><td>4 O fluxo</td><td>Abertura, avaliação de risco, identificação, triagem, fotos, manejo, encaminhamento e relatório; perguntas uma por vez com resumo final; orientações justificadas</td></tr>
+<tr><td>5 Espécie desconhecida</td><td>Busca por nome e por grupo; opção "espécie não identificada"; identificação provisória, sem induzir confirmação</td></tr>
+<tr><td>6 Fotografias</td><td>Tipos de foto recomendados; identificação livre e observação por foto; metadados automáticos; preservação do original e histórico de alterações</td></tr>
+<tr><td>7 Relatórios</td><td>Ficha auxiliar em PDF com quinze itens, guardada no aparelho e compartilhada a critério do usuário</td></tr>
+<tr><td>8 O indispensável</td><td>Registro local de ocorrências e lotes; checklist condicional; fotos vinculadas; guia e contatos; relatório em PDF</td></tr>
+<tr><td>9 Situação real</td><td>Narrativa completa de um atendimento, da abertura à entrega do animal e ao encerramento</td></tr>
+<tr><td>10 Observações</td><td>Uso individual, auxiliar e sem conexão, sem integração com sistemas institucionais</td></tr>
+</tbody>
+</table>
+<p class="fonte">Fonte: elaborado pelos autores (2026), a partir das respostas do questionário.</p>
+</div>
+</div>
+
+</body>
+</html>
