@@ -607,7 +607,7 @@ async function resumoDadosHtml() {
       <button class="botao botao-bloco mb-3" data-acao="persistir">${icone('escudo')} Proteger dados</button>` : ''}`;
 }
 
-const VERSAO = '0.8';
+const VERSAO = '0.8.1';
 
 function telaSobre() {
   return `<main class="tela">
@@ -622,7 +622,7 @@ function telaSobre() {
       <dl class="dados">
         <dt>Instituição</dt><dd>Universidade Estadual do Centro-Oeste — UNICENTRO, Departamento de Ciência da Computação (DECOMP), Guarapuava - PR</dd>
         <dt>Desenvolvimento</dt><dd>Pedro Paulo de Lima</dd>
-        <dt>Orientação</dt><dd>Profa. Dra. Carolina de Paula Almeida</dd>
+        <dt>Orientação</dt><dd>Profa. Dra. Carolina Paula de Almeida</dd>
         <dt>Coorientação</dt><dd>Prof. Dr. Jayme Augusto Peres</dd>
         <dt>Conteúdo de manejo</dt><dd>Me. Vanessa Eloisa Dallabrida — CETRAS/UNICENTRO (DEVET)</dd>
       </dl>

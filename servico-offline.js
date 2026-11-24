@@ -1,5 +1,5 @@
 /* SISTRAFA — service worker: mantém o app disponível offline */
-const VERSAO = 'sistrafa-v18';
+const VERSAO = 'sistrafa-v19';
 const CACHE_IMAGENS = 'sistrafa-fauna-img';   // fotos de referência do guia (mesmo nome usado em js/fauna-online.js)
 const CACHE_DADOS = 'sistrafa-fauna-api';
 const ARQUIVOS = [
